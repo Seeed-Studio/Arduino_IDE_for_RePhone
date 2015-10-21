@@ -1,0 +1,47 @@
+[Version]
+CatalogFile=usbcdc.cat
+Signature=$CHICAGO$
+Class=USB
+Provider=%String0%
+LayoutFile=layout.inf,layout1.inf,layout2.inf
+
+[DestinationDirs]
+DefaultDestDir=10
+USB.Drvrs=10,SYSTEM32\DRIVERS
+USB.VxD=11
+
+[Manufacturer]
+%String0%=Microsoft
+%MTK%=MTK
+
+[MTK]
+%String1%=MTKUSB,USB\VID_0E8D&PID_0003,USB\Vid_0e8d&Pid_0023&MI_00,USB\Vid_0e8d&Pid_0023&MI_02
+
+[MTKUSB]
+CopyFiles=USB.Drvrs,USB.VxD
+AddReg=MTKUSB.AddReg
+
+[USB.Drvrs]
+usbser.sys
+ccport.sys
+
+[USB.VxD]
+wdmmdmld.vxd
+
+[MTKUSB.AddReg]
+HKR,,DevLoader,0,*ntkern
+HKR,,NTMPDriver,,"usbser.sys,ccport.sys"
+
+[MTKUSB.HW]
+AddReg=MTKAddReg.HW
+
+[MTKAddReg.HW]
+HKR,,ChildID,2,"USB\MTKUSB"
+
+[PreCopySection]
+HKR,,NoSetupUI,,1
+
+[Strings]
+String0 = "Microsoft Corporation"
+String1 = "USB Serial"
+MTK = "MediaTek Inc."
