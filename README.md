@@ -120,9 +120,8 @@ Let's start with a simple program **Hello World**
 6. Now copy the following code to your Arduino IDE:
 
 
-	// hello world for test RePhone
-	// loovee@10-18-2015
-   
+    // hello world for test RePhone
+    // loovee@10-18-2015
     void setup() {
     	Serial.begin(115200);
     }
