@@ -147,7 +147,7 @@ Then open the **Serial Monitor**
 
 #References
 
-[RePhone mian Page](www.seeed.cc/rephone)
+[RePhone mian Page](http://www.seeed.cc/rephone)
 
 [Wiki for Arduino_IDE_for_RePhone](http://www.seeedstudio.com/wiki/Arduino_IDE_for_RePhone_Kit)
 
