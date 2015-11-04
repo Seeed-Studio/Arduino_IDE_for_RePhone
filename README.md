@@ -70,21 +70,21 @@ In the Device Manager, you'll be seeing unknown devices as shown below:
 
 To make use of the Arduino IDE for RePhone, you would have to update/flash the firmware as well. The process is as simple as following:
 
-1. **Disconnect your RePhone with PC, press and hold the power key(PWR) for 2 seconds to turn it OFF** (LED indicator turn **RED** and then goes out)
+1.**Disconnect your RePhone with PC, press and hold the power key(PWR) for 2 seconds to turn it OFF** (LED indicator turn **RED** and then goes out)
 
-2. Open the FirmwareUpdate.exe under the path \Arduino_IDE_for_RePhone\hardware\tools\mtk, click **Download**. 
+2.Open the FirmwareUpdate.exe under the path \Arduino_IDE_for_RePhone\hardware\tools\mtk, click **Download**. 
 
 ![](http://www.seeedstudio.com/wiki/images/c/c2/Updatefirmware.png)
 
-3. Now you will be asked to connect your RePhone to PC via USB cable, make sure your RePhone has been turned **OFF**. 
+3.Now you will be asked to connect your RePhone to PC via USB cable, make sure your RePhone has been turned **OFF**. 
 
 ![](http://www.seeedstudio.com/wiki/images/6/64/Updatefirmware_pluginrephone.png)
 
-4. Wait until the downloading finish. 
+4.Wait until the downloading finish. 
 
 ![](http://www.seeedstudio.com/wiki/images/1/1e/Updatefirmware_downloading.png)
 
-5. In the Complete page click OK to finish the firmware update.
+5.In the Complete page click OK to finish the firmware update.
 
 ![](http://www.seeedstudio.com/wiki/images/4/47/Updatefirmware_complete.png)
 
@@ -95,13 +95,13 @@ Now you've prepared things required, and we are ready to rock on with RePhone.
 
 Let's start with a simple program **Hello World**
 
-1. Press and hold the power key (PWR) for 2 seconds to turn it ON (LED indicator shows GREEN) 
+1.Press and hold the power key (PWR) for 2 seconds to turn it ON (LED indicator shows GREEN) 
 
-2. Open the **Arduino_IDE_for_RePhone.exe** in the folder where you unzipped the Arduino IDE for RePhone, the software interface is as following:
+2.Open the **Arduino_IDE_for_RePhone.exe** in the folder where you unzipped the Arduino IDE for RePhone, the software interface is as following:
 
 ![](http://www.seeedstudio.com/wiki/images/f/f7/Arduino_IDE_for_RePhone_interface.png)
 
-3. Open **Device Manager** to check for the COM ports. There will be **two COM ports**:
+3.Open **Device Manager** to check for the COM ports. There will be **two COM ports**:
 
 
 * MTK USB Debug Port is used for uploading code
@@ -109,38 +109,40 @@ Let's start with a simple program **Hello World**
 
 ![](http://www.seeedstudio.com/wiki/images/9/9f/Arduino_IDE_for_RePhone_COM_Ports.png)
 
-4. On the Arduino IDE window, click **Tool > Port**, select **MTK USB Debug Port**, which is **COM20** in this case, the COM number might be different in your PC, just make sure it corresponds to the Debug Port. 
+4.On the Arduino IDE window, click **Tool > Port**, select **MTK USB Debug Port**, which is **COM20** in this case, the COM number might be different in your PC, just make sure it corresponds to the Debug Port. 
 
 ![](http://www.seeedstudio.com/wiki/images/4/42/Arduino_IDE_for_RePhone_Debug_Port.png)
 
-5. On the Arduino IDE window, click **Tool > Board**, select RePhone
+5.On the Arduino IDE window, click **Tool > Board**, select RePhone
 
 ![](http://www.seeedstudio.com/wiki/images/a/a9/Arduino_IDE_for_RePhone_Board.png)
 
 6. Now copy the following code to your Arduino IDE:
-// hello world for test RePhone
-// loovee@10-18-2015
+
+
+	// hello world for test RePhone
+	// loovee@10-18-2015
    
     void setup() {
-    Serial.begin(115200);
+    	Serial.begin(115200);
     }
        
     void loop() {
-    // put your main code here, to run repeatedly:
-    Serial.println("Hello World, Hello RePhone!");
-    delay(100);
+    	// put your main code here, to run repeatedly:
+    	Serial.println("Hello World, Hello RePhone!");
+    	delay(100);
     }
     
-7. Now press the Upload button to upload the code to your RePhone. You will see the **Done uploading** when the code is successfully uploaded.
+7.Now press the Upload button to upload the code to your RePhone. You will see the **Done uploading** when the code is successfully uploaded.
 
 ![](http://www.seeedstudio.com/wiki/images/7/77/Arduino_IDE_for_RePhone_upload.png)
 
-8. As RePhone use different COM ports for uploading software and logs, to read the logs, we need to switch the selected COM Port to **MTK USB Modem Port**. On the Arduino IDE window, click **Tool > Port**, select **MTK USB Modem Port**, which is **COM48** in this case.
+8.As RePhone use different COM ports for uploading software and logs, to read the logs, we need to switch the selected COM Port to **MTK USB Modem Port**. On the Arduino IDE window, click **Tool > Port**, select **MTK USB Modem Port**, which is **COM48** in this case.
 Then open the **Serial Monitor**
 
 ![](http://www.seeedstudio.com/wiki/images/6/6c/Arduino_IDE_for_RePhone_Serial_Monitor.png)
 
-9. Now we can see the **Hello World** we have printed with **Serial.println()** . 
+9.Now we can see the **Hello World** we have printed with **Serial.println()** . 
 
 ![](http://www.seeedstudio.com/wiki/images/c/c8/Arduino_IDE_for_RePhone_Helloworld.png)
 
