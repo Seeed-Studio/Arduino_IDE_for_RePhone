@@ -1,7 +1,6 @@
 
 #include <LCFile.h>
 
-
 char writedata[40] = {0};
 char readdata[40] = {0};
 unsigned char sysTime = 0;
