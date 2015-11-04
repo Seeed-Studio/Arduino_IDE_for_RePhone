@@ -117,19 +117,18 @@ Let's start with a simple program **Hello World**
 
 ![](http://www.seeedstudio.com/wiki/images/a/a9/Arduino_IDE_for_RePhone_Board.png)
 
-6. Now copy the following code to your Arduino IDE:
-
+6.Now copy the following code to your Arduino IDE:
 
     // hello world for test RePhone
     // loovee@10-18-2015
     void setup() {
-    	Serial.begin(115200);
+        Serial.begin(115200);
     }
        
     void loop() {
-    	// put your main code here, to run repeatedly:
-    	Serial.println("Hello World, Hello RePhone!");
-    	delay(100);
+        // put your main code here, to run repeatedly:
+        Serial.println("Hello World, Hello RePhone!");
+        delay(100);
     }
     
 7.Now press the Upload button to upload the code to your RePhone. You will see the **Done uploading** when the code is successfully uploaded.
