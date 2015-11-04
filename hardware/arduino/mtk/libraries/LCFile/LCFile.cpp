@@ -17,45 +17,40 @@
 #include "LCFile.h"
 
 
-void LCFileClass::FileCreate(const char* filename)
+void LCFileClass::Create(const char* filename)
 {
-	strcpy(FileName, filename);
-	remoteCall(file_create, &FileName);
+	remoteCall(file_create, (char *)filename);
 }
 
-void LCFileClass::FileOpen(const char* filename)
-{
-	strcpy(FileName, filename);
-	remoteCall(file_open, &FileName);
-}
-
-void LCFileClass::FileWrite(const char* strbuf)
+void LCFileClass::Write(const char* fileName, const char* strbuf)
 {
 	file_info_struct dataInf;
-	strcpy(dataInf.filename, FileName);
+	strcpy(dataInf.filename, fileName);
 	strcpy(dataInf.buffer, strbuf);
 	remoteCall(file_write, &dataInf);
 }
 
-void LCFileClass::FileDelete(void)
+void LCFileClass::Delete(const char* fileName)
 {
-	remoteCall(file_delete, &FileName);
+	remoteCall(file_delete, (char *)fileName);
 }
 
-void LCFileClass::FileRead(char* strbuf,unsigned int nbyte, unsigned long pos)
+void LCFileClass::Read(const char* fileName, char* strbuf,unsigned int nbyte, unsigned long pos)
 {
 	read_info_struct dataInf;
-	strcpy(dataInf.filename, FileName);
+	strcpy(dataInf.filename, fileName);
 	dataInf.nbyte = nbyte;
 	dataInf.pos = pos;
 	dataInf.buffer = strbuf;
 	remoteCall(file_read, &dataInf);
 }
 
-void LCFileClass::FileSize(unsigned long* size)
+void LCFileClass::Size(const char* fileName, unsigned long* size)
 {
 	size_info_struct dataInf;
-	strcpy(dataInf.filename, FileName);
+	strcpy(dataInf.filename, fileName);
 	dataInf.size = size;
 	remoteCall(file_size, &dataInf);
 }
+
+LCFileClass LFile;

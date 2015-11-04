@@ -31,30 +31,22 @@ public:
 	 *  \param [in] filename the name of file
 	 *  \return Return Null.
 	 */
-	void FileCreate(const char* filename);
-	
-	/**
-	 *  \brief Open a file with name, if there is not the file, it will be create.
-	 *  
-	 *  \param [in] filename the name of file
-	 *  \return Return Null.
-	 */
-	void FileOpen(const char* filename);
-	
+	void Create(const char* filename);
+		
 	/**
 	 *  \brief Write a buffer into a file.
 	 *  
 	 *  \param [in] strbuf the buffer want to write.
 	 *  \return Return Null.
 	 */
-	void FileWrite(const char* strbuf);
+	void Write(const char* fileName, const char* strbuf);
 	
 	/**
 	 *  \brief Delete a file, need to open file.
 	 *  
 	 *  \return Return Null.
 	 */
-	void FileDelete(void);
+	void Delete(const char* fileName);
 	
 	/**
 	 *  \brief Read a file, need to open file.
@@ -65,7 +57,7 @@ public:
 	 *  
 	 *  \return Return Null.
 	 */
-	void FileRead(char* strbuf, unsigned int nbyte, unsigned long pos = 0);
+	void Read(const char* fileName, char* strbuf, unsigned int nbyte, unsigned long pos = 0);
 	
 	/**
 	 *  \brief Get the size of a file, need to open file.
@@ -73,11 +65,12 @@ public:
 	 *  \param [in] size the pointer of size.
 	 *  \return Return Null.
 	 */
-	void FileSize(unsigned long* size);
+	void Size(const char* fileName, unsigned long* size);
 
 private:
-	char FileName[26];
+
 };
 
+extern LCFileClass LFile;
 
 #endif

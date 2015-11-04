@@ -44,41 +44,6 @@ boolean file_create(void* user_data)
 	return true;
 }
 
-boolean file_open(void* user_data)
-{
-	char* data_name = (char*)user_data;
-	
-	VMCHAR filename[VM_FS_MAX_PATH_LENGTH] = {0};
-	VMWCHAR wfilename[VM_FS_MAX_PATH_LENGTH] = {0};
-	VM_FS_HANDLE filehandle = -1;
-	
-	sprintf((char*)filename, "%c:\\%s", vm_fs_get_internal_drive_letter(), data_name);
-	vm_chset_ascii_to_ucs2(wfilename, sizeof(wfilename), filename);
-	
-	if((filehandle = vm_fs_open(wfilename, VM_FS_MODE_READ, TRUE)) < 0)
-    {
-        vm_log_info("Failed to open file: %s",filename);
-		//Serial1.print("Failed to open file.\r\n");
-		
-		if((filehandle = vm_fs_open(wfilename, VM_FS_MODE_CREATE_ALWAYS_WRITE, TRUE)) < 0)
-		{
-			vm_log_info("Failed to create file: %s",filename);
-			//Serial1.print("Failed to create file.\r\n");
-			return true;
-		}
-		
-		vm_log_info("Success to create file: %s", filename);
-		//Serial1.print("Success to create file.\r\n");
-		vm_fs_close(filehandle);
-		return true;
-    }
-	
-	vm_log_info("Success to open file: %s", filename);
-	//Serial1.print("Success to open file.\r\n");
-	vm_fs_close(filehandle);
-	return true;
-}
-
 boolean file_write(void* user_data)
 {
 	file_info_struct* data_file = (file_info_struct*)user_data;

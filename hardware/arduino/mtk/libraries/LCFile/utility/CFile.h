@@ -12,6 +12,7 @@
    See the GNU Lesser General Public License for more details.
 */
 
+
 #ifndef _CFILE_H
 #define _CFILE_H
 
@@ -19,12 +20,15 @@
 extern "C" {
 #endif
 
+
 boolean file_create(void* user_data);
 boolean file_open(void* user_data);
 boolean file_write(void* user_data);
 boolean file_delete(void* user_data);
 boolean file_read(void* user_data);
 boolean file_size(void* user_data);
+boolean file_rename(void* user_data);
+
 
 typedef struct
 {
