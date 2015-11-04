@@ -1,5 +1,5 @@
 
-linkit_one.name=LinkIt ONE
+linkit_one.name=RePhone
 linkit_one.vid.0=0x0E8D
 linkit_one.pid.0=0x0023
 linkit_one.upload.tool=bossac

@@ -1,6 +1,9 @@
+// LCD display test
 
 #include <LDisplay.h>
+
 unsigned long sysData = 0;
+
 void setup()
 {
     Serial1.begin(115200);
@@ -20,6 +23,7 @@ void setup()
     Lcd.draw_updata();
     Lcd.draw_font(10, 0, "adow Phone Test.", 0xffff00, 0);
 }
+
 void loop()
 {
     Lcd.draw_number(0, 20, sysData++, 0xffff00, 0);

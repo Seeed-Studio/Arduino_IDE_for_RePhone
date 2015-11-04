@@ -10,15 +10,18 @@ unsigned char sysTime = 0;
 
 void setup()
 {
-    Serial1.begin(115200);
-    Serial1.print("CFile test.\r\n");
+    Serial.begin(115200);
+    while(!Serial.available());
+    while(Serial.available())Serial.read();
+    
+    Serial.print("CFile test.\r\n");
     File1.FileOpen("file1.txt");
     File2.FileOpen("file2.txt");
     File1.FileWrite("file1.txt\r\n");
     File2.FileWrite("file2.txt\r\n");
     File1.FileRead(readdata,40,0);
-    Serial1.print(readdata);
-    Serial1.print("\r\n");
+    Serial.print(readdata);
+    Serial.print("\r\n");
 }
 
 void loop()
@@ -26,17 +29,17 @@ void loop()
     unsigned char i = 10;
     unsigned long size = 0; 
     sprintf((char*)writedata, "It is time %d,Pls check!\r\n", sysTime ++);
-    Serial1.print(writedata);
+    Serial.print(writedata);
     File1.FileWrite(writedata);
     File1.FileSize(&size);
-    Serial1.print("File1 size is ");
-    Serial1.println(size);
+    Serial.print("File1 size is ");
+    Serial.println(size);
     while(i--)
     {
         if(task_uart_key() == 1)
         {
             File2.FileDelete();
-            Serial1.print("FileDelete.\r\n");
+            Serial.print("FileDelete.\r\n");
         }
         delay(100);
     }
@@ -48,9 +51,9 @@ unsigned int task_uart_key()
     unsigned int keyValue = 0;
     unsigned char bitCount = 0; 
     unsigned char dataTemp1[10] = {0};
-    while(Serial1.available() > 0)
+    while(Serial.available() > 0)
     {
-            unsigned char inChar = Serial1.read();
+            unsigned char inChar = Serial.read();
             inString += (char)inChar;
             dataTemp1[bitCount] = inChar - '0';
             bitCount += 1;
@@ -60,7 +63,7 @@ unsigned int task_uart_key()
     {
             if(bitCount > 4)
             {
-                Serial1.println("Key input error.");
+                Serial.println("Key input error.");
             }
             else
             {
@@ -70,8 +73,8 @@ unsigned int task_uart_key()
                             for(char j=0;j<(bitCount-i-1);j++)dataTemp2 *= 10;
                             keyValue += (dataTemp1[i] * dataTemp2);
                     }   
-                    Serial1.print("Key value is: ");
-                    Serial1.println(keyValue); 
+                    Serial.print("Key value is: ");
+                    Serial.println(keyValue); 
             }
     }
     return keyValue;   
