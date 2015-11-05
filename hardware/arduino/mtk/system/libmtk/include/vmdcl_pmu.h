@@ -65,7 +65,7 @@ typedef enum
 /* Enum for controlling GPIO pin power. Note that not all GPIO pin numbers
    are available for configuration on all HDK plaform. Refer to HDK pin-out
    diagram for the available GPIO pin number. For example, use
-   VM_DCL_PMU_VGPIO10 for GPIO10 on LinkIt ONE, which maps to D0 pin. */
+   VM_DCL_PMU_VGPIO10 for GPIO10 on LinkIt ONE, which maps to VM_PIN_D0 pin. */
 typedef enum
 {
     VM_DCL_PMU_VGPIO0,   /* Pin number for GPIO0 */
@@ -225,7 +225,7 @@ typedef struct
  * EXAMPLE
  * <code>
  *    // This example explain how to enable gpio power of
- *    // pin GPIO40 (D4 on LinkIt ONE).
+ *    // pin GPIO40 (VM_PIN_D4 on LinkIt ONE).
  *    VM_DCL_HANDLE handle;
  *    vm_dcl_pmu_control_ld0_buck_gpio_power_enable_t val;
  *

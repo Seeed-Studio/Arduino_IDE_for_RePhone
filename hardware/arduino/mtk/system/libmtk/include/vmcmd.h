@@ -42,27 +42,26 @@ extern "C" {
 
 #include "vmtype.h"
 
-/* Represents the incoming command from Monitor tool. */
+/* This function represents the incoming command from the Monitor tool. */
 typedef struct
 {
-    VMUINT32 command_type;        /* Reserved. */
-    VMUINT32 command_buffer_size; /* Size of the incoming command buffer. */
-    VMSTR command_buffer;		      /* Buffer that stores the command. */
+    VMUINT32 command_type;        /* Reserved type. */
+    VMUINT32 command_buffer_size; /* The size of the incoming command buffer. */
+    VMSTR command_buffer;		      /* The buffer that stores the command. */
 } vm_cmd_command_t;
 
 /*****************************************************************************
  * FUNCTION
  *  vm_cmd_callback
  * DESCRIPTION
- *  Callback function for handling incoming commands from Monitor tool.
+ *  This represents the callback function that handles incoming commands from the Monitor tool.
  *  This callback is invoked in the main thread.
  *
  * PARAMETERS
- *  command   : [IN] The command that is passed from Monitor tool.
+ *  command   : [IN] The command that is passed from the Monitor tool.
  *                   The content of the buffer is only valid within the
  *                   callback. Once the callback returns, buffer pointed by
- *                   command.command_buffer becomes invalid. The command passed
- *					 to the callback will have the "AT+[port]" part stripped.
+ *                   command.command_buffer becomes invalid. 
  *  user_data : [IN] The user_data passed to vm_cmd_open_port.
  * RETURNS
  *  void.
@@ -73,21 +72,17 @@ typedef void (*vm_cmd_callback)(vm_cmd_command_t* command, void* user_data);
  * FUNCTION
  *  vm_cmd_open_port
  * DESCRIPTION
- *  Call this function to start listening to the commands from Monitor tool.
- *  Commands are passed in through port, which ranges from 500 to 65535.
- *  User of Monitor tool should send AT command in this format:
- *
- *  "AT+[port]commandstring", e.g. "AT+[5000]command1"
- *
- *  In this case, the command is passed into port 5000.
- *  Only the callback registered with port number 5000 will be invoked.
- *  The command passed to the callback will have the "AT+[port]" part stripped.
- *
+ *  This function is called to start listening for commands from the Monitor tool.
+ *  Commands are passed from the port, which ranges from 500 to 65535.
+ *  
+ *  For example, if the command is passed into port 5000, then
+ *  only the callback registered with port number 5000 will be invoked.
+ *  
  *  This API fails when invalid port number is assigned.
  *
  * PARAMETERS
- *  port      : [IN] The port number, ranges from 500 to 65535.
- *  callback  : [IN] Callback that is invoked when receiving AT command
+ *  port      : [IN] The port number, which ranges from 500 to 65535.
+ *  callback  : [IN] The callback that is invoked when it receives command
  *                   from the assigned port.
  *  user_data : [IN] User data for the callback; Pass NULL if unused.
  * RETURNS
@@ -101,7 +96,7 @@ VM_RESULT vm_cmd_open_port(VMUINT16 port,
  * FUNCTION
  *  vm_cmd_close_port
  * DESCRIPTION
- *  Closes the command port. The callback will no longer be invoked even when
+ *  This function closes the command port. The callback will no longer be invoked even when
  *  Monitor tool passes command.
  * PARAMETERS
  *  port : [IN] The port number that is opened by vm_open_command_port().

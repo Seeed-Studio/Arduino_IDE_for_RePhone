@@ -44,9 +44,14 @@ boolean linkit_sms_delete_handler(void* userdata);
 
 
 linkit_sms_send_struct *g_linkit_sms_send_data;
+linkit_sms_unread_msg_struct msgRead = {-1,};
+char msgNewFlag = 0;
 
 char *g_linkit_sms_number_buf = 0;
 char *g_linkit_sms_content_buf = 0;
+
+
+void gsm_sms_set_interrupt_event_handler(void);
 
 
 /*****************************************************************************
@@ -59,7 +64,7 @@ LSMSClass::LSMSClass():
     _msgId(-1),
     _msgPos(0)
 {
-
+	gsm_sms_set_interrupt_event_handler();
 }
 
 LSMSClass::~LSMSClass()
@@ -95,9 +100,6 @@ int LSMSClass::endSMS()
 
     LTask.remoteCall(linkit_sms_send_handler, &data);
 
-    //LGSMLOG("[LOG]endSMS():");
-    //LGSMLOG(data.result);
-
     if(data.result == 1)
         return 1;
     else
@@ -106,26 +108,24 @@ int LSMSClass::endSMS()
 
 int LSMSClass::available()
 {
-    linkit_sms_unread_msg_struct data;
+    //linkit_sms_unread_msg_struct data;
     
-    LTask.remoteCall(linkit_sms_get_unread_handler, &data);
-	//data.id = -1;
+    //LTask.remoteCall(linkit_sms_get_unread_handler, &data);
+    //if (data.id < 0)return false;
 
-	//Serial1.print("available data id ");
-    //Serial1.println(data.id);
-	//Serial1.println(g_linkit_sms_number_buf);
-	//Serial1.println(g_linkit_sms_content_buf);
+    //_msgId = data.id;
+	//_msgNumber = g_linkit_sms_number_buf;
+    //_msgContent = g_linkit_sms_content_buf;
+    //_msgPos = 0;
+
+	if (msgNewFlag == 0)return false;
 	
-    if (data.id < 0)return false;
-
-    _msgId = data.id;
-    //_msgNumber = data.number;
-    //_msgContent = data.content;
+	_msgId = msgRead.id;
 	_msgNumber = g_linkit_sms_number_buf;
     _msgContent = g_linkit_sms_content_buf;
     _msgPos = 0;
-	//Serial1.println(_msgNumber);
-	//Serial1.println(_msgContent);
+	msgNewFlag = 0;
+	
     return true;
 }
 
@@ -187,22 +187,15 @@ int LSMSClass::peek()
 
 void LSMSClass::flush()
 {
-    if(_msgId < 0)
-        return;
+    if(_msgId < 0)return;
 
     LTask.remoteCall(linkit_sms_delete_handler, (void*)_msgId);
-    _msgId = -1;
+    _msgId = - 1;
 }
-
 
 boolean linkit_sms_ready_handler(void* userdata)
 {
     int result;
-
-    //LGSMLOG("[LOG]vm_gsm_sim_get_card_count:");
-    //LGSMLOG(vm_gsm_sim_get_card_count());
-    //LGSMLOG("[LOG]vm_gsm_sms_is_sms_ready:");
-    //LGSMLOG(vm_gsm_sms_is_sms_ready());
 
     result = false;
     if(vm_gsm_sim_get_card_count() > 0 && vm_gsm_sms_is_sms_ready())
@@ -226,12 +219,6 @@ boolean linkit_sms_send_handler(void* userdata)
     VMWCHAR *content;
     VMINT  size;
 
-    //LGSMLOG("[LOG]linkit_sms_send_handler");
-    //LGSMLOG("[LOG]Number:");
-    //LGSMLOG(data->number);
-    //LGSMLOG("[LOG]Content:");
-    //LGSMLOG(data->content);
-
     // ascii to ucs2
     size = (strlen(data->number)+1)*sizeof(VMWCHAR);
     number = (VMWCHAR *)vm_malloc(size);
@@ -244,8 +231,6 @@ boolean linkit_sms_send_handler(void* userdata)
     // send and wait for result
     g_linkit_sms_send_data = data;
     size = vm_gsm_sms_send(number, content, linkit_sms_send_callback, NULL);
-    //LGSMLOG("[LOG]vm_gsm_sms_send:");
-    //LGSMLOG(size);
 
     // TODO: can we free them now, or need to wait for callback?
     vm_free(number);
@@ -264,7 +249,7 @@ boolean linkit_sms_send_handler(void* userdata)
 void linkit_sms_read_callback(vm_gsm_sms_callback_t* callback_data)
 {
     vm_gsm_sms_read_message_data_callback_t* read_msg;
-	//Serial1.print("sms_read_sms_sample_callback \r\n");
+
     /* Checks if it is an SMS read event */
     if(callback_data->action == VM_GSM_SMS_ACTION_READ)
     {
@@ -272,11 +257,6 @@ void linkit_sms_read_callback(vm_gsm_sms_callback_t* callback_data)
         {
             if(callback_data->action_data)
             {
-				//Serial1.print("sms_read_sms_sample_callback action_data null\r\n");
-				//goto TASKEND;
-                //return;	
-            
-				//Serial1.print("sms_read_sms_sample_callback action_data ok\r\n");
 				/* Analyses the data */
 				read_msg = (vm_gsm_sms_read_message_data_callback_t*)callback_data->action_data;
 
@@ -291,6 +271,8 @@ void linkit_sms_read_callback(vm_gsm_sms_callback_t* callback_data)
 				/* Frees the memory allocated by the malloc() */
 				vm_free(read_msg->message_data->content_buffer);
 				vm_free(read_msg->message_data);
+				
+				msgNewFlag = 1;
 			}
         }
         else
@@ -298,7 +280,7 @@ void linkit_sms_read_callback(vm_gsm_sms_callback_t* callback_data)
             Serial1.print("read msg failed\r\n");
         }
     }
-	//Serial1.print("sms_read_sms_sample_callback end\r\n");
+	
 	LTask.post_signal();
 }
 
@@ -309,22 +291,11 @@ boolean linkit_sms_get_unread_handler(void* userdata)
     vm_gsm_sms_read_message_data_t* message_data = NULL;
     VMWCHAR* content_buff;
     VMINT res;
-    VMINT number_count = 0;
-    VM_GSM_SIM_ID sim_id;
-    VMBOOL result;
-	//Serial1.print("sms_read_sms_sample \r\n");
-    number_count = vm_gsm_sim_get_card_count();
-    //Serial1.print("sms read card count ");
-	//Serial1.println(number_count);
-    sim_id = vm_gsm_sim_get_active_sim_card();
-    //Serial1.print("sms read active sim id ");
-	//Serial1.println(sim_id);
-    result = vm_gsm_sim_has_card();
-    //Serial1.print("sms read sim card result " );
-	//Serial1.println(result);
+	
     /* Gets the message ID of the first message in the SMS inbox */
-    message_id = vm_gsm_sms_get_message_id(VM_GSM_SMS_BOX_INBOX, 0);
-	dest -> id= message_id;
+    //message_id = vm_gsm_sms_get_message_id(VM_GSM_SMS_BOX_INBOX, 0);
+	//dest -> id= message_id;
+	message_id = dest->id;
 	
     if(message_id >= 0)
     {
@@ -341,7 +312,6 @@ boolean linkit_sms_get_unread_handler(void* userdata)
 		if(content_buff == NULL)
 		{
 			vm_free(message_data);
-			//Serial1.print("sms read malloc content fail\r\n");
 			return false;
 
 		}
@@ -355,7 +325,6 @@ boolean linkit_sms_get_unread_handler(void* userdata)
 		{
 			vm_free(content_buff);
 			vm_free(message_data);
-			//Serial1.print("register read callback fail\r\n");
 			return false;
 		}
 		else
@@ -380,5 +349,43 @@ boolean linkit_sms_delete_handler(void* userdata)
     return false;
 }
 
+void gsm_sms_read_available(VMINT16 msgID)
+{
+	msgRead.id = msgID;
+	linkit_sms_get_unread_handler(&msgRead);
+}
+
+VMINT gsm_sms_new_message_interrupt_proc(vm_gsm_sms_event_t* event_data)
+{
+	vm_gsm_sms_event_new_sms_t* event_new_message_ptr;
+	vm_gsm_sms_new_message_t* new_message_ptr = NULL;
+
+	if(event_data->event_id == VM_GSM_SMS_EVENT_ID_SMS_NEW_MESSAGE)
+	{
+		event_new_message_ptr = (vm_gsm_sms_event_new_sms_t *)event_data->event_info; // Gets the event info.
+		new_message_ptr = (vm_gsm_sms_new_message_t*)event_new_message_ptr->message_data; // Gets the message data.
+
+		vm_log_info("custom_sms_new_message_interrupt_proc have got ready message");
+		gsm_sms_read_available(new_message_ptr->message_id);
+	}
+
+	return TRUE;
+}
+
+void gsm_sms_set_interrupt_event_handler(void)
+{
+	VMINT res = 0;
+
+	res = vm_gsm_sms_set_interrupt_event_handler(VM_GSM_SMS_EVENT_ID_SMS_NEW_MESSAGE, gsm_sms_new_message_interrupt_proc, NULL);
+
+	if(res != VM_GSM_SMS_RESULT_OK)
+	{
+		vm_log_info("gsm sms set interrupt fail!");
+	}
+	else
+	{
+		vm_log_info("gsm sms set interrupt success!");
+	}
+}
 
 LSMSClass LSMS;

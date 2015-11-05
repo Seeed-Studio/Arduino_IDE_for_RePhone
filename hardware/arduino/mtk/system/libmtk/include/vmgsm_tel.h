@@ -41,7 +41,7 @@ extern "C" {
 #endif
 
 #include "vmtype.h"
-
+#include "vmaudio.h"
 
 
 /* Maximum length of the telephone numbers. */
@@ -255,6 +255,76 @@ VM_RESULT vm_gsm_tel_call_reg_listener(vm_gsm_tel_call_listener_callback callbac
  *    of resources. It returns -4 or less, if there is an internal error.
  *****************************************************************************/
 VM_RESULT vm_gsm_tel_call_actions(const vm_gsm_tel_call_actions_data_t* data);
+
+/* Telephony output device structure */
+typedef enum
+{
+  VM_GSM_TEL_DEVICE_NORMAL = 0,   /* Earphone, Car-kit  */
+  VM_GSM_TEL_DEVICE_HEADSET = 1,  /* Earphone, Car-kit  */
+  VM_GSM_TEL_DEVICE_LOUDSPK = 2,  /* Loudspeaker for free sound  */
+  VM_GSM_TEL_DEVICE_MAX = 0xFF
+}VM_GSM_TEL_DEVICE;
+
+/*****************************************************************************
+ * FUNCTION
+ *  vm_gsm_tel_keytone_callback
+ * DESCRIPTION
+ *  Telephony DTMF callback function pointer
+ * PARAMETERS
+ *  key_ascii:  [IN] The ascii code.
+ *  user_data:  [IN] User data.
+ *****************************************************************************/
+typedef void (*vm_gsm_tel_keytone_callback)(VMINT16 key_ascii, void* user_data);
+
+/*****************************************************************************
+ * FUNCTION
+ *  vm_gsm_tel_keytone_start_detect
+ * DESCRIPTION
+ *  Start telephony keytone detect. When there is keytone, this callback will be invoked, the interface should be invoke after telephony connected.
+ * PARAMETERS
+ * callback:    [IN] Callback function pointer.
+ * user_data:   [IN] User data.
+ * RETURNS
+ *  VM_SUCCESS : start detect successfully.
+ *  VM_FAIL : start detect failed.
+*****************************************************************************/
+VM_RESULT vm_gsm_tel_keytone_start_detect(vm_gsm_tel_keytone_callback callback, void* user_data);
+
+/*****************************************************************************
+ * FUNCTION
+ *  vm_gsm_tel_keytone_stop_detect
+ * DESCRIPTION
+ *  Stop telephony keytone detect.
+ * PARAMETERS
+ *    void
+ * RETURNS
+ *    void
+*****************************************************************************/
+void vm_gsm_tel_keytone_stop_detect(void);
+
+/*****************************************************************************
+ * FUNCTION
+ *  vm_gsm_tel_set_output_device
+ * DESCRIPTION
+ *  Sets Telephony output device.
+ * PARAMETERS
+ *  device : [IN] Output device, like earphone or loudspeaker.
+ * RETURNS
+ *    void
+*****************************************************************************/
+void vm_gsm_tel_set_output_device(VM_GSM_TEL_DEVICE device);
+
+/*****************************************************************************
+ * FUNCTION
+ *  vm_gsm_tel_set_volume
+ * DESCRIPTION
+ *  Sets Telephony volume level.
+ * PARAMETERS
+ *  volume : [IN] Desired volume level, the range spreads from 0-6.
+ * RETURNS
+ *    void
+*****************************************************************************/
+void vm_gsm_tel_set_volume(VM_AUDIO_VOLUME volume);
 
 #ifdef __cplusplus
 }

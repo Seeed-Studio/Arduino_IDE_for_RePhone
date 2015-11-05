@@ -49,7 +49,7 @@ extern "C" {
  * <code>
  *   #include "vmdcl.h"
  *   VM_DCL_HANDLE eint_handle;                  // Declares a VM_DCL_HANDLE variable.
- *   eint_handle = vm_dcl_open(VM_DCL_EINT, 19); // Calls vm_dcl_open() to get a handle. 19 means eint19.
+ *   eint_handle = vm_dcl_open(VM_DCL_EINT, PIN2EINT(VM_PIN_P0)); // Calls vm_dcl_open() to get a handle. Use PIN2EINT to convert from pin name to EINT number.
  * </code>
  *****************************************************************************/
 typedef enum
@@ -79,7 +79,7 @@ typedef enum
  *   vm_eint_control_config_t eint_config;         // Declares a vm_eint_control_config_t variable.
  *   vm_eint_control_sensitivity_t sens_data;      // Declares a vm_eint_control_sensitivity_t variable.
  *   vm_eint_control_hw_debounce_t debounce_time;  // Declares a vm_eint_control_hw_debounce_t variable.
- *   eint_handle = vm_dcl_open(VM_DCL_EINT, PIN2EINT(D2));   // Calls vm_dcl_open() to get a handle. Use PIN2EINT to convert from pin name to EINT number.
+ *   eint_handle = vm_dcl_open(VM_DCL_EINT, PIN2EINT(VM_PIN_P0));   // Calls vm_dcl_open() to get a handle. Use PIN2EINT to convert from pin name to EINT number.
  *   vm_dcl_control(eint_handle, VM_EINT_COMMAND_MASK, NULL);    // Before configuring EINT, we mask it firstly.
  *   vm_dcl_registercallback(eint_handle, EVENT_EINT_TRIGGER, eint_callback, (void*)NULL ); // Registers the callback. Note: the last parameter is NULL.
  *   sens_data.sensitivity = 1;         // 1 means the Level Sensitive. 0 means the Edge Sensitive.

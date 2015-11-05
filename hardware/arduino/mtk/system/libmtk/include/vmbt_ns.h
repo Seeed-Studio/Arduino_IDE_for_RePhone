@@ -50,7 +50,6 @@ typedef enum
     VM_BT_NS_CATEGORY_NOTIFICATION,     /* Notification category. */
     VM_BT_NS_CATEGORY_CALL,             /* Call category. */
     VM_BT_NS_CATEGORY_MAP,              /* Map category. */
-    VM_BT_NS_CATEGORY_MAX = 0x7FFFFFFF  /* Forces the compiler to use 4-byte integer for enum. */
 } VM_BT_NS_CATEGORY;
 
 /* Notification subtype enum. */
@@ -60,7 +59,6 @@ typedef enum
     VM_BT_NS_SUBTYPE_SMS,               /* SMS subtype in notification category. */
     VM_BT_NS_SUBTYPE_BLOCKED_SENDER,    /* Blocked sender subtype in notification category. */
     VM_BT_NS_SUBTYPE_MISSED_CALL,       /* Missed call subtype in call category. */
-    VM_BT_NS_SUBTYPE_MAX = 0x7FFFFFFF   /* Forces the compiler to use 4-byte integer for enum. */
 } VM_BT_NS_SUBTYPE;
 
 /* Notification action enum. */
@@ -70,7 +68,6 @@ typedef enum
     VM_BT_NS_ACTION_DELETE,             /* Delete action. */
     VM_BT_NS_ACTION_DELETE_ALL,         /* Delete all action. */
     VM_BT_NS_ACTION_UPDATE,             /* Update action. */
-    VM_BT_NS_ACTION_MAX = 0x7FFFFFFF    /* Forces the compiler to use 4-byte integer for enum. */
 } VM_BT_NS_ACTION;
 
 /* Notification source. */
@@ -80,7 +77,6 @@ typedef enum
     VM_BT_NS_DATA_SOURCE_SPP,               /* SPP source. */
     VM_BT_NS_DATA_SOURCE_DOGP,              /* DOGP source. */
     VM_BT_NS_DATA_SOURCE_ANCS,              /* ANCS source. */
-    VM_BT_NS_DATA_SOURCE_MAX = 0x7FFFFFFF   /* Forces the compiler to use 4-byte integer for enum. */
 } VM_BT_NS_DATA_SOURCE;
 
 /* Bluetooth notification result. */

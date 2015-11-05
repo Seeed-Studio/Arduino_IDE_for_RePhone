@@ -146,6 +146,9 @@ boolean callvoiceCall(void* user_data)
   
   ret = vm_gsm_tel_call_actions(&data);
   
+  vm_gsm_tel_set_output_device(VM_GSM_TEL_DEVICE_LOUDSPK);
+  vm_gsm_tel_set_volume(VM_AUDIO_VOLUME_6);
+  
   if(ret < 0)
   {
   	return false;
@@ -173,7 +176,11 @@ boolean callanswerCall(void* user_data)
   //data.user_data = result;
   data.user_data = NULL;
   data.callback = _call_voiceCall_callback;
+  
   ret = vm_gsm_tel_call_actions(&data);
+  
+  vm_gsm_tel_set_output_device(VM_GSM_TEL_DEVICE_LOUDSPK);
+  vm_gsm_tel_set_volume(VM_AUDIO_VOLUME_6);
   
   if(ret < 0)
   {

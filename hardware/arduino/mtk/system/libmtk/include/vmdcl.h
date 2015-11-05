@@ -172,7 +172,7 @@ typedef enum
     VM_DCL_GPIO_GROUP_START = 0x400,     /* GPIO device number starts. Refer to VM_DCL_GPIO_DEVICE. */
     VM_DCL_PWM_GROUP_START  = 0x500,     /* PWM device number starts. Refer to VM_DCL_PWM_DEVICE. */
     VM_DCL_PMU_GROUP_START  = 0xB00,     /* PMU device number starts. Refer to VM_DCL_PMU_DEVICE. */
-   VM_DCL_KBD_GROUP_START  = 0xF00,      /* KBD device number starts. Refer to VM_DCL_KBD_DEVICE */
+    VM_DCL_KBD_GROUP_START  = 0xF00,      /* KBD device number starts. Refer to VM_DCL_KBD_DEVICE */
     VM_DCL_EINT_GROUP_START = 0x1C00,    /* EINT device number starts. Refer to VM_DCL_EINT_DEVICE. */
 } VM_DCL_DEVICE_GROUP;
 
@@ -299,7 +299,7 @@ VM_DCL_STATUS vm_dcl_write(VM_DCL_HANDLE device_handle,VM_DCL_BUFFER* buffer,
 
 /*****************************************************************************
  * FUNCTION
- *    vm_dcl_registercallback
+ *    vm_dcl_register_callback
  * DESCRIPTION
  *    Registers a callback to listen to the events from a device specified by
  *    the device_handle. The callback enables an asynchronous operation between
@@ -358,7 +358,7 @@ VM_DCL_OWNER_ID vm_dcl_get_owner_id(void);
  * DESCRIPTION
  *    Sets the pin mode.
  * PARAMETERS
- *    pin:  [IN] The PIN ID, like D0/D1...
+ *    pin:  [IN] The PIN ID, like VM_PIN_P0/VM_PIN_P1...
  *    mode: [IN] Specifies the mode that is to be set for the PIN, like
  *                 GPIO/PWM/EINT. Refer to VM_DCL_PIN_MODE for detail.
  * RETURNS
@@ -372,7 +372,7 @@ VM_DCL_STATUS vm_dcl_config_pin_mode(VMUINT pin, VM_DCL_PIN_MODE mode);
  * DESCRIPTION
  *    Converts PIN to PWM ID.
  * PARAMETERS
- *    pin: [IN] The PIN ID, like D0/D1.
+ *    pin: [IN] The PIN ID, like VM_PIN_P0/VM_PIN_P1...
  * RETURNS
  *    VMINT. The PWM ID of this PIN.  If failed, it returns 0.
  *****************************************************************************/
@@ -384,7 +384,7 @@ VM_DCL_STATUS vm_dcl_config_pin_mode(VMUINT pin, VM_DCL_PIN_MODE mode);
  * DESCRIPTION
  *    Converts PIN to ADC channel ID.
  * PARAMETERS
- *    pin: [IN] The PIN ID, like D0/D1.
+ *    pin: [IN] The PIN ID, like VM_PIN_P0/VM_PIN_P1...
  * RETURNS
  *    VMINT. The ADC channel ID of this PIN.  If failed, it returns 0.
  *****************************************************************************/
@@ -396,10 +396,10 @@ VM_DCL_STATUS vm_dcl_config_pin_mode(VMUINT pin, VM_DCL_PIN_MODE mode);
  * DESCRIPTION
  *    Converts PIN to EINT ID, e.g.
  *    <code>
- *        VM_DCL_HANDLE eint_handle = vm_dcl_open(VM_DCL_EINT,PIN2EINT(D2));
+ *        VM_DCL_HANDLE eint_handle = vm_dcl_open(VM_DCL_EINT,PIN2EINT(VM_PIN_P2));
  *    </code>
  * PARAMETERS
- *    pin: [IN] The PIN ID, like D0/D1.
+ *    pin: [IN] The PIN ID, like VM_PIN_P0/VM_PIN_P1...
  * RETURNS
  *    VMINT. The EINT ID of this PIN. If failed, it returns 0.
  *****************************************************************************/

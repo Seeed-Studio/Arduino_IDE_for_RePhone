@@ -123,6 +123,33 @@ void vm_wdt_reset(VM_WDT_HANDLE handle);
  *****************************************************************************/
 void vm_wdt_stop(VM_WDT_HANDLE handle);
 
+
+/*****************************************************************************
+ * FUNCTION
+ *  VM_ASSERT
+ * DESCRIPTION
+ *  assert the phone if the expression is false
+ * PARAMETERS
+ *  expr  : [IN]   expression to check
+ * RETURN VALUES
+ *  N/A
+ *****************************************************************************/
+#ifdef __LINKIT_DEBUG__
+#ifdef WIN32
+	#define VM_ASSERT(__expr__) \
+	do {                        \
+	    if (!(__expr__))        \
+	    {                       \
+	        _asm {int 3}        \
+	    }                       \
+	} while (0)
+#else
+	#define VM_ASSERT(expr) do {if(!(expr)) vm_assert((VMSTR)__FILE__, __LINE__); } while (0)
+#endif
+#else
+	#define VM_ASSERT(expr) do {if(!(expr)) {} } while (0)
+#endif
+
 #ifdef __cplusplus
 }
 #endif

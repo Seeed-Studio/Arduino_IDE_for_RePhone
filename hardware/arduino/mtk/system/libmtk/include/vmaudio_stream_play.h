@@ -86,9 +86,9 @@ typedef struct
  *  callback:      [IN]  Callback function.
  *  user_data:     [IN]  User data
  * RETURNS
- *	VM_AUDIO_RESULT
+ *	VM_RESULT
  *****************************************************************************/
-VM_AUDIO_RESULT vm_audio_stream_play_open(VM_AUDIO_HANDLE* handle, const vm_audio_stream_play_config_t* audio_type, vm_audio_result_callback callback, void* user_data);
+VM_RESULT vm_audio_stream_play_open(VM_AUDIO_HANDLE* handle, const vm_audio_stream_play_config_t* audio_type, vm_audio_result_callback callback, void* user_data);
 
 
 /*****************************************************************************
@@ -99,9 +99,9 @@ VM_AUDIO_RESULT vm_audio_stream_play_open(VM_AUDIO_HANDLE* handle, const vm_audi
  * PARAMETERS
  *  handle : [IN] Bit-stream handle, received by vm_audio_stream_play_open.
  * RETURNS
- *	VM_AUDIO_RESULT
+ *	VM_RESULT
 *****************************************************************************/
-VM_AUDIO_RESULT vm_audio_stream_play_finish(VM_AUDIO_HANDLE handle);
+VM_RESULT vm_audio_stream_play_finish(VM_AUDIO_HANDLE handle);
 
 
 /*****************************************************************************
@@ -112,9 +112,9 @@ VM_AUDIO_RESULT vm_audio_stream_play_finish(VM_AUDIO_HANDLE handle);
  * PARAMETERS
  *  handle : [IN] Bit-stream handle, received by vm_audio_stream_play_open.
  * RETURNS
- *	VM_AUDIO_RESULT
+ *	VM_RESULT
 *****************************************************************************/
-VM_AUDIO_RESULT vm_audio_stream_play_close(VM_AUDIO_HANDLE handle);
+VM_RESULT vm_audio_stream_play_close(VM_AUDIO_HANDLE handle);
 
 
 /*****************************************************************************
@@ -126,9 +126,9 @@ VM_AUDIO_RESULT vm_audio_stream_play_close(VM_AUDIO_HANDLE handle);
  *  handle : [IN] Bit-stream handle, received by vm_audio_stream_play_open.
  *  status : [OUT] the status of buffer.
  * RETURNS
- *	VM_AUDIO_RESULT
+ *	VM_RESULT
 *****************************************************************************/
-VM_AUDIO_RESULT vm_audio_stream_play_get_buffer_status(VM_AUDIO_HANDLE handle, vm_audio_stream_play_buffer_status_t* status);
+VM_RESULT vm_audio_stream_play_get_buffer_status(VM_AUDIO_HANDLE handle, vm_audio_stream_play_buffer_status_t* status);
 
 
 /*****************************************************************************
@@ -142,9 +142,9 @@ VM_AUDIO_RESULT vm_audio_stream_play_get_buffer_status(VM_AUDIO_HANDLE handle, v
  *  buffer_size :   [IN] Data buffer size.
  *  written :       [OUT] The real data size that was put.
  * RETURNS
- *	VM_AUDIO_RESULT
+ *	VM_RESULT
 *****************************************************************************/
-VM_AUDIO_RESULT vm_audio_stream_play_put_data(VM_AUDIO_HANDLE handle, const void* buffer, VMUINT 	buffer_size, VMUINT* written);
+VM_RESULT vm_audio_stream_play_put_data(VM_AUDIO_HANDLE handle, const void* buffer, VMUINT 	buffer_size, VMUINT* written);
 
 
 /*****************************************************************************
@@ -156,9 +156,9 @@ VM_AUDIO_RESULT vm_audio_stream_play_put_data(VM_AUDIO_HANDLE handle, const void
  *  handle :        [IN] Bit-stream handle, received by vm_audio_stream_play_open.
  *  parameters :    [IN] Audio parameters.
  * RETURNS
- *	VM_AUDIO_RESULT
+ *	VM_RESULT
 *****************************************************************************/
-VM_AUDIO_RESULT vm_audio_stream_play_start(VM_AUDIO_HANDLE handle, vm_audio_stream_play_start_parameters_t* parameters);
+VM_RESULT vm_audio_stream_play_start(VM_AUDIO_HANDLE handle, vm_audio_stream_play_start_parameters_t* parameters);
 
 
 /*****************************************************************************
@@ -169,9 +169,9 @@ VM_AUDIO_RESULT vm_audio_stream_play_start(VM_AUDIO_HANDLE handle, vm_audio_stre
  * PARAMETERS
  *  handle : [IN] Bit-stream handle, received by vm_audio_stream_play_open.
  * RETURNS
- *	VM_AUDIO_RESULT
+ *	VM_RESULT
 *****************************************************************************/
-VM_AUDIO_RESULT vm_audio_stream_play_stop(VM_AUDIO_HANDLE handle);
+VM_RESULT vm_audio_stream_play_stop(VM_AUDIO_HANDLE handle);
 
 
 /*****************************************************************************
@@ -183,9 +183,9 @@ VM_AUDIO_RESULT vm_audio_stream_play_stop(VM_AUDIO_HANDLE handle);
  *  handle :        [IN] Bit-stream handle, received by vm_audio_stream_play_open.
  *  current_time :  [OUT] Current play time in ms.
  * RETURNS
- *	VM_AUDIO_RESULT
+ *	VM_RESULT
 *****************************************************************************/
-VM_AUDIO_RESULT vm_audio_stream_play_get_play_time(VM_AUDIO_HANDLE handle, VMUINT* current_time);
+VM_RESULT vm_audio_stream_play_get_play_time(VM_AUDIO_HANDLE handle, VMUINT* current_time);
 
 #ifdef __cplusplus
 }

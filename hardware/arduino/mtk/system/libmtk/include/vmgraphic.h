@@ -465,11 +465,11 @@ void vm_graphic_draw_gradient_rectangle(vm_graphic_frame_t* frame, VMINT x0, VMI
  *  edge_filter_mode                [IN] How to handle source key edge
  *  edge_filter_color               [IN] Color to use if edge_filter_mode is USER_SPEC_COLOR
  *  sample_mode                     [IN] How to handle buffer edge
- *  flag                            [IN] Refer to VM_GRAPHIC_TS_FLAG_ENUM
+ *  flag                            [IN] Refer to VM_GRAPHIC_TRANSFORM_FLAG
  * RETURNS
  *   refer to VM_GRAPHIC_RESULT
  *****************************************************************************/
-VM_GRAPHIC_RESULT vm_graphic_linear_transform(
+VM_RESULT vm_graphic_linear_transform(
     vm_graphic_frame_t* out_frame,
     vm_graphic_frame_t* in_frame,
     VMFLOAT* matrix,

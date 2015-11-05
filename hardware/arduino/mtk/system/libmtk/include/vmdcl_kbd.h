@@ -48,14 +48,14 @@ extern "C" {
 * EXAMPLE
 * <code>
 *   #include "vm_dcl.h"
-*   VM_DCL_HANDLE kbd_handle;                   		   // Declare a VM_DCL_HANDLE variable. 
+*   VM_DCL_HANDLE kbd_handle;                   	// Declare a VM_DCL_HANDLE variable.
 *   kbd_handle = vm_dcl_open(VM_DCL_KBD,0);         // Call vm_dcl_open to get a handle. 
 * </code>
 *******************************************************************/
 typedef enum
 {
     VM_DCL_KBD_START = VM_DCL_KBD_GROUP_START, /*KBD device start*/
-    VM_DCL_KBD,                             /*This device is used to control keypad.*/
+    VM_DCL_KBD,                                /*This device is used to control keypad.*/
 }VM_DCL_KBD_DEVICE;
 
 /******************************************************************
@@ -67,11 +67,11 @@ typedef enum
 * <code>
 *   #include "vm_dcl.h"
 *   VM_DCL_HANDLE       kbd_handle;						// Declare a VM_DCL_HANDLE variable. 
-*   VM_KBD_CTRL_PINSEL_T kbdmap;
+*   vm_dcl_kbd_control_pin_t kbdmap;
 *   kbd_handle       = vm_dcl_open(VM_DCL_KBD,0);     // First, we call vm_dcl_open to get a handle. the second parameter always fill 0.
 *   kbdmap.colmap  = 0x01;
 *   kbdmap.rowmap = 0x01;
-*   vm_dcl_control(kbd_handle,VM_KBD_CMD_CONFIG_PIN,(void *)(&kbdmap)); //  we call vm_dcl_control to set the col and row. 
+*   vm_dcl_control(kbd_handle,VM_DCL_KBD_COMMAND_CONFIG_PIN,(void *)(&kbdmap)); //  we call vm_dcl_control to set the col and row.
 *   vm_dcl_close(kbd_handle);                           			// Finally, we call vm_dcl_close 
 * </code>
 *******************************************************************/
@@ -84,9 +84,9 @@ typedef enum
 
 /******************************************************************
 * DESCRIPTION
-*   This struct is for VM_KBD_CMD_CONFIG_PIN control command,used in vm_dcl_control as parameter.
+*   This struct is for VM_DCL_KBD_COMMAND_CONFIG_PIN control command,used in vm_dcl_control as parameter.
 *   With this command, you can set the HW keypad col and row,and enable it.
-*   You can find the sample code in the description of VM_DCL_KBD_CTRL_CMD_T.
+*   You can find the sample code in the description of VM_DCL_KBD_COMMAND.
 *   All commands have similar usage.
 *******************************************************************/
 

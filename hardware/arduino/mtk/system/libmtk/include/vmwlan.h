@@ -517,6 +517,7 @@ typedef struct
 typedef struct
 {
     VM_WLAN_AUTHORIZE_MODE authorize_mode;      /* Authorization mode. */
+    VMINT8 reserved;                            /* Reserved */
     VMINT8 ssid[VM_WLAN_SSID_MAX_LENGTH + 1];   /* SSID. */
     VMINT8 psk[VM_WLAN_PASSWORD_MAX_LENGTH];    /* PSK. */
 } vm_wlan_parameter_t;

@@ -57,76 +57,50 @@ typedef enum
 } VM_DCL_PIN_MODE;
 
 #if defined(__HDK_LINKIT_ONE_V1__)
-#define D0   10    /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_UART */
-#define D1   11    /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_UART */
-#define D2   46    /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_EINT */
-#define D3   13    /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_EINT / VM_DCL_PIN_MODE_PWM */
-#define D4   40    /* Pin mux, VM_DCL_PIN_MODE_GPIO */
-#define D5   3     /* Pin mux, VM_DCL_PIN_MODE_GPIO */
-#define D6   25    /* Pin mux, VM_DCL_PIN_MODE_GPIO */
-#define D7   50    /* Pin mux, VM_DCL_PIN_MODE_GPIO */
-#define D8   48    /* Pin mux, VM_DCL_PIN_MODE_GPIO */
-#define D9   19    /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_PWM */
-#define D10 26     /* Pin mux, VM_DCL_PIN_MODE_GPIO */
-#define D11 28     /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_SPI / VM_DCL_PIN_MODE_SDIO */
-#define D12 29     /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_SPI / VM_DCL_PIN_MODE_SDIO */
-#define D13 27     /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_SPI / VM_DCL_PIN_MODE_SDIO */
-#define D14 0      /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_ADC */
-#define D15 1      /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_ADC */
-#define D16 2      /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_ADC */
-#define D18 44     /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_I2C */
-#define D19 43     /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_I2C */
-#define A0 0       /* Pin mux, same with D14 */
-#define A1 1       /* Pin mux, same with D15 */
-#define A2 2       /* Pin mux, same with D16 */
+#define VM_PIN_D0  10     /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_UART */
+#define VM_PIN_D1  11     /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_UART */
+#define VM_PIN_D2  46     /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_EINT */
+#define VM_PIN_D3  13     /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_EINT / VM_DCL_PIN_MODE_PWM */
+#define VM_PIN_D4  40     /* Pin mux, VM_DCL_PIN_MODE_GPIO */
+#define VM_PIN_D5  3      /* Pin mux, VM_DCL_PIN_MODE_GPIO */
+#define VM_PIN_D6  25     /* Pin mux, VM_DCL_PIN_MODE_GPIO */
+#define VM_PIN_D7  50     /* Pin mux, VM_DCL_PIN_MODE_GPIO */
+#define VM_PIN_D8  48     /* Pin mux, VM_DCL_PIN_MODE_GPIO */
+#define VM_PIN_D9  19     /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_PWM */
+#define VM_PIN_D10 26     /* Pin mux, VM_DCL_PIN_MODE_GPIO */
+#define VM_PIN_D11 28     /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_SPI / VM_DCL_PIN_MODE_SDIO */
+#define VM_PIN_D12 29     /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_SPI / VM_DCL_PIN_MODE_SDIO */
+#define VM_PIN_D13 27     /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_SPI / VM_DCL_PIN_MODE_SDIO */
+#define VM_PIN_D14 0      /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_ADC */
+#define VM_PIN_D15 1      /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_ADC */
+#define VM_PIN_D16 2      /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_ADC */
+#define VM_PIN_D18 44     /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_I2C */
+#define VM_PIN_D19 43     /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_I2C */
+#define VM_PIN_A0 0       /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_ADC */
+#define VM_PIN_A1 1       /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_ADC */
+#define VM_PIN_A2 2       /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_ADC */
+#define VM_PIN_SDA 44     /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_I2C */
+#define VM_PIN_SCL 43     /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_I2C */
+#define VM_PIN_RX  10     /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_UART */
+#define VM_PIN_TX  11     /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_UART */
 #elif defined(__HDK_LINKIT_ASSIST_2502__)
-#define D0 13
-#define D1 3
-#define D2 27
-#define D3 29
-#define D4 28
-#define D5 19
-#define D6 43
-#define D7 44
-#define D8 11
-#define D9 10
-#define D10 38
-#define D11 39
-#define D12 47
-#define D13 48
-#define D14 49
-#define D15 50
-#define A0 57
-#define A1 0
-#define A2 1
-#define A3 2
-#define E0 52
-#elif defined(__HDK_MT2502D_DEV_BOARD__)
-#define D0 13
-#define D1 3
-#define D2 27
-#define D3 29
-#define D4 28
-#define D5 19
-#define D6 43
-#define D7 44
-#define D8 11
-#define D9 10
-#define D10 38
-#define D11 39
-#define D12 47
-#define D13 48
-#define D14 49
-#define D15 50
-#define D16
-#define D17
-#define A0 57
-#define A1 0
-#define A2 1
-#define A3 2
-#define E0 52
+#define VM_PIN_P0 13      /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_PWM / VM_DCL_PIN_MODE_EINT*/
+#define VM_PIN_P1 3       /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_PWM */
+#define VM_PIN_P2 27      /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_SPI */
+#define VM_PIN_P3 28      /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_SPI */
+#define VM_PIN_P4 29      /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_SPI */
+#define VM_PIN_P5 19      /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_SPI */
+#define VM_PIN_P6 43      /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_I2C */
+#define VM_PIN_P7 44      /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_I2C */
+#define VM_PIN_P8 10      /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_UART */
+#define VM_PIN_P9 11      /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_UART */
+#define VM_PIN_P10 57     /* Pin mux, VM_DCL_PIN_MODE_ADC */
+#define VM_PIN_P11 0      /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_EINT / VM_DCL_PIN_MODE_ADC */
+#define VM_PIN_P12 1      /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_EINT / VM_DCL_PIN_MODE_ADC */
+#define VM_PIN_P13 2      /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_EINT / VM_DCL_PIN_MODE_ADC */
+#define VM_PIN_P14 52     /* Pin mux, VM_DCL_PIN_MODE_EINT */
 #else
-#define D0 0
+#define VM_PIN_P0 0
 #endif
 
 #ifdef __cplusplus

@@ -288,9 +288,13 @@ void vm_mutex_unlock(const vm_mutex_t* mutex);
  *	  vm_thread_sleep
  * DESCRIPTION
  *	  Makes a thread sleep for a number of milliseconds. It should only be used
- *    the threads spawned from vm_thread_create().
+ *    in the threads spawned from vm_thread_create(). Note, putting a thread into
+ *    the sleep for too long could potentially cause unexpected behavior. If the
+ *    thread, which is responsible for reading from a message queue, was put into
+ *    sleep for too long, for example, the message queue might overflow because
+ *    of too many unprocessed messages.
  * PARAMETERS
- *	  time_out: [IN] The duration of the sleep, in millisecond.
+ *	  time_out: [IN] The duration of the sleep, in milliseconds.
  * RETURNS
  *    void
  * EXAMPLE

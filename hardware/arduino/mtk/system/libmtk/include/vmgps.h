@@ -47,7 +47,7 @@ extern "C" {
 
 
 
-/*The GPS type. GPS is always used, it can be enhanced with the optional support of Beidou and GLONASS. The actual support of multiple satellite systems is dependent on the underlying hardware platform. */
+/*The GPS type. GPS is always available and it can be enhanced with the optional support of Beidou and GLONASS. The actual support of multiple satellite systems is dependent on the underlying hardware platform. */
 /*GPS type. The type is dependent on your GPS chipset. Only MediaTek MTK3336 supports VM_GPS_ONLY. */
 typedef enum
 {
@@ -56,6 +56,12 @@ typedef enum
     VM_GPS_BEIDOU   /* The GPS and BEIDOU type. */
 } VM_GPS_TYPE;
 
+/*GPS open confirm message structures */
+typedef enum
+{
+    VM_GPS_OPEN_SUCCESS,    /* The GPS open success type. */
+    VM_GPS_OPEN_FAILED      /* The GPS open failed type. */
+} VM_GPS_OPEN;
 
 #define VM_GPS_MAX_GPGGA_SENTENCE_LENGTH 100
 #define VM_GPS_MAX_GPGSA_SENTENCE_LENGTH 80
@@ -68,18 +74,18 @@ typedef enum
 #define VM_GPS_MAX_GLGSA_SENTENCE_LENGTH 80
 
 
-/*The GPS data structure */
+/*The GPS data structures */
 typedef struct
 {
     VMCHAR  GPGGA[VM_GPS_MAX_GPGGA_SENTENCE_LENGTH+1];     /* The GGA data type. */
     VMCHAR  GPGSA[VM_GPS_MAX_GPGSA_SENTENCE_LENGTH+1];     /* The GSA data type. */
-    VMCHAR  GPRMC[VM_GPS_MAX_GPRMC_SENTENCE_LENGTH+1];     /* TheRMC data type.*/
-    VMCHAR  GPVTG[VM_GPS_MAX_GPVTG_SENTENCE_LENGTH+1];     /* TheVTG data type.*/
-    VMCHAR  GPGSV[VM_GPS_MAX_GPGSV_SENTENCE_LENGTH+1];     /* TheGSV data type.*/
-    VMCHAR  GLGSV[VM_GPS_MAX_GLGSV_SENTENCE_LENGTH+1];     /* TheGLONASS GSV data type.*/
-    VMCHAR  GLGSA[VM_GPS_MAX_GLGSA_SENTENCE_LENGTH+1];     /* TheGLONASS GSA data type.*/
-    VMCHAR  BDGSV[VM_GPS_MAX_BDGSV_SENTENCE_LENGTH+1];     /* TheBD GSV data type.*/
-    VMCHAR  BDGSA[VM_GPS_MAX_BDGSA_SENTENCE_LENGTH+1];     /* TheBD GSA data type.*/
+    VMCHAR  GPRMC[VM_GPS_MAX_GPRMC_SENTENCE_LENGTH+1];     /* The RMC data type.*/
+    VMCHAR  GPVTG[VM_GPS_MAX_GPVTG_SENTENCE_LENGTH+1];     /* The VTG data type.*/
+    VMCHAR  GPGSV[VM_GPS_MAX_GPGSV_SENTENCE_LENGTH+1];     /* The GSV data type.*/
+    VMCHAR  GLGSV[VM_GPS_MAX_GLGSV_SENTENCE_LENGTH+1];     /* The GLONASS GSV data type.*/
+    VMCHAR  GLGSA[VM_GPS_MAX_GLGSA_SENTENCE_LENGTH+1];     /* The GLONASS GSA data type.*/
+    VMCHAR  BDGSV[VM_GPS_MAX_BDGSV_SENTENCE_LENGTH+1];     /* The BD GSV data type.*/
+    VMCHAR  BDGSA[VM_GPS_MAX_BDGSA_SENTENCE_LENGTH+1];     /* The BD GSA data type.*/
 } vm_gps_sentence_info_t;
 
 
@@ -90,7 +96,9 @@ typedef enum
     VM_GPS_SET_LOCATION_REPORT_PERIOD = 1,           /* The Normal mode. The minimum time is 1 second. */
     VM_GPS_SET_LOCATION_REPORT_PREIOD_SLEEP_FIRST,   /* The 'Sleep First' mode is a low power mode. GPS is powered off in the beginning and will be switched on to get the position before the set period times out.*/
     VM_GPS_SET_LOCATION_REPORT_PREIOD_WROK_FIRST,    /* The 'Work First' mode is a low power mode. GPS is powered on in the beginning to get the position and once the position is found, it will switch off to save energy. After the set period it will power itself on.*/
-    VM_GPS_SET_ASSIST_DATA_FOR_FAST_FIXED            /*The 'Set GPS assist data for fast fix' type. */
+    VM_GPS_SET_ASSIST_DATA_FOR_FAST_FIXED,           /* The 'Set GPS assist data for fast fix' type. */
+    VM_GPS_SET_EPO_AUTO_DOWNLOAD ,                   /* This controls EPO auto download to on or off. Default is ON. */
+    VM_GPS_GET_EPO_AUTO_DOWNLOAD_SETTING             /* This gets EPO auto download setting. You can get the results from checking message in VM_GPS_SET_PARAM_RESULT. */
 } VM_GPS_PARAMETERS;
 
 /*The GPS assist data.*/
@@ -110,11 +118,13 @@ typedef struct
 /*The GPS callback message.*/
 typedef enum
 {
-    VM_GPS_OPEN_RESULT,         /* The GPS open confirm message, the data is the result (success/failure) of opening GPS.*/
+    VM_GPS_OPEN_RESULT,         /* The GPS open confirm message, the data is the result (VM_GPS_OPEN success/failure) of opening GPS.*/
     VM_GPS_SET_MODE_RESULT,     /* Reserved. */
     VM_GPS_CLOSE_RESULT,        /* Reserved, the engine will release all resources when GPS is closed, so it will not send a 'closed' message. */
     VM_GPS_SENTENCE_DATA,       /* GPS data receive message, the data represents the GPS sentence data, please refer to vm_gps_sentence_info_t. */
-    VM_GPS_SET_PARAM_RESULT,    /* GPS set parameter confirm message, data shows if it was successful or not*/
+    VM_GPS_SET_PARAM_RESULT,    /* GPS set parameter confirm message, data shows if it was successful or not */
+    VM_GPS_GET_PARAM_RESULT,    /* GPS get parameter confirm message, now it only support parameter VM_GPS_GET_EPO_AUTO_DOWNLOAD_SETTING
+                                   it will return EPO auto download setting */
     VM_GPS_MESSAGE_TYPE_MAX = 0x7FFFFFFF
 } VM_GPS_MESSAGE;
 
@@ -124,9 +134,9 @@ typedef enum
  * DESCRIPTION
  *  This function represents a GPS callback.
  * PARAMETERS
- *  message:[IN] GPS message  open/set mode/sentence ...
- *  data: [IN] message parameters, please refer to VM_GPS_PARAMETERS.
- *  user_data:[IN] user data
+ *  message:[IN] The GPS message, such as open/set mode/sentence etc.
+ *  data: [IN] The message parameters, please refer to VM_GPS_PARAMETERS.
+ *  user_data:[IN] The user data.
  *****************************************************************************/
 typedef void (*vm_gps_callback)(VM_GPS_MESSAGE message, void* data, void* user_data);
 
@@ -134,14 +144,14 @@ typedef void (*vm_gps_callback)(VM_GPS_MESSAGE message, void* data, void* user_d
 * FUNCTION
  *    vm_gps_open
  * DESCRIPTION
- *  This will initialize GPS and opens the UART port.
+ *  This initializes the GPS and opens the UART port.
  * PARAMETERS
- *  type:[IN] GPS type, refer to vm_gps_type_enum
- *  callback:[IN]The GPS callback function
- *  user_data:[IN]user data
+ *  type:[IN] The GPS type, please refer to vm_gps_type_enum.
+ *  callback:[IN]The GPS callback function.
+ *  user_data:[IN]The user data.
  * RETURNS
- *  VM_SUCCESS : Opened successfully.
- *  VM_FAIL : Failed while opening.
+ *  VM_SUCCESS : It opened successfully.
+ *  VM_FAIL : It failed while opening.
  *****************************************************************************/
 VM_RESULT vm_gps_open(VM_GPS_TYPE type, vm_gps_callback callback, void* user_data);
 
@@ -150,26 +160,38 @@ VM_RESULT vm_gps_open(VM_GPS_TYPE type, vm_gps_callback callback, void* user_dat
 * FUNCTION
  *    vm_gps_set_parameter
  * DESCRIPTION
- *  This function sets a GPS parameter
+ *  This function sets a GPS parameter.
  * PARAMETERS
- *  parameter   :[IN]Parameter you want to set, refer to VM_GPS_PARAMETERS
- *  value       :[IN]Parameter value
- *  user_data   :[IN]User data
+ *  parameter   :[IN]This is the parameter you want to set, please refer to VM_GPS_PARAMETERS for more details.
+ *  value       :[IN]This is the parameter value.
+ *  user_data   :[IN]This is the user data.
  * RETURNS
- *  VM_SUCCESS : Successfully set the parameter.
- *  VM_FAIL : Failed
+ *  VM_SUCCESS : It successfully sets the parameter.
+ *  VM_FAIL : It failed to set the parameter.
 *****************************************************************************/
 VM_RESULT vm_gps_set_parameters(VM_GPS_PARAMETERS parameters, VMUINT32 value, void* user_data);
 
+/*****************************************************************************
+* FUNCTION
+ *    vm_gps_get_parameter
+ * DESCRIPTION
+ *  This function gets a GPS parameter.
+ * PARAMETERS
+ *  parameter   :[IN]This is the parameter you want to get, like VM_GPS_GET_EPO_AUTO_DOWNLOAD_SETTING.
+ * RETURNS
+ *  VM_SUCCESS : It successfully gets the parameter.
+ *  VM_FAIL : It failed to get the parameter.
+*****************************************************************************/
+VM_RESULT vm_gps_get_parameters(VM_GPS_PARAMETERS parameters);
 
 /*****************************************************************************
 * FUNCTION
 * vm_gps_close
 * DESCRIPTION
-* This function will close GPS if it is not in use by any other application.
+* This function will close the GPS if it is not in use by any other application.
 * RETURNS
-* VM_OK :Successfully closed GPS.
-* VM_FAIL : Closing GPS failed.
+* VM_OK :It successfully closed the GPS.
+* VM_FAIL : It failed to close the GPS.
 *****************************************************************************/
 VM_RESULT vm_gps_close(void);
 

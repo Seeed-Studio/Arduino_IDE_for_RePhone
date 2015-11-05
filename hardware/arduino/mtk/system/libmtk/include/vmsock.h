@@ -86,6 +86,9 @@ typedef enum
 #define PF_INET     (0)  /* IPv4. */
 #define PF_INET6    (1)  /* IPv6. */
 
+/* Address family */
+#define AF_INET     PF_INET /* IPv4. */
+
 /* Socket type */
 #define SOCK_STREAM (0)  /* Stream socket, TCP. */
 #define SOCK_DGRAM  (1)  /* Datagram socket, UDP. */

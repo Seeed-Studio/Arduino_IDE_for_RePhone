@@ -217,7 +217,7 @@ typedef enum
     VM_DCL_GPIO_COMMAND_SET_MODE_9,    /* Set pin mode to mode 9. Refer to the
                                          pin mapping table for the corresponding
                                          mode of each pin. */
-    VM_DCL_GPIO_COMMAND_SET_MODE_10,   /* Set pin mode to mode 10. Refer to the
+    VM_DCL_GPIO_COMMAND_SET_MODE_10    /* Set pin mode to mode 10. Refer to the
                                          pin mapping table for the corresponding
                                          mode of each pin. */
 } VM_DCL_GPIO_CONTROL_COMMAND;
@@ -231,7 +231,7 @@ typedef enum
 typedef enum
 {
     VM_DCL_GPIO_IO_LOW = 0,   /* This value is GPIO status high. */
-    VM_DCL_GPIO_IO_HIGH = 1,  /* This value is GPIO status low. */
+    VM_DCL_GPIO_IO_HIGH = 1   /* This value is GPIO status low. */
 } VM_DCL_GPIO_IO_LEVEL_STATUS;
 
 

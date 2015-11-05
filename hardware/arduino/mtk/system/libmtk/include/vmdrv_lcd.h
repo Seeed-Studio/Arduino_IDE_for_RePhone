@@ -36,7 +36,7 @@
 #ifndef VMDRV_LCD_SDK_H
 #define VMDRV_LCD_SDK_H
 
-#ifdef __cplusplus
+#ifdef _cplusplus
 extern "C" {
 #endif
 
@@ -162,7 +162,7 @@ VMINT vm_drv_lcd_setup_driver(vm_drv_lcd_function_list_t* func_list);
 void vm_drv_lcd_operation(VM_DRV_LCD_OPERATION opcode);
 void vm_drv_lcd_operation2(VM_DRV_LCD_OPERATION opcode, VMUINT32 para);
 
-#ifdef __cplusplus
+#ifdef _cplusplus
 }
 #endif
 

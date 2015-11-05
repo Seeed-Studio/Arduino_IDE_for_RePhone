@@ -1,116 +1,58 @@
-/*
-  Copyright (c) 2011 Arduino.  All right reserved.
-
-  This library is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Lesser General Public
-  License as published by the Free Software Foundation; either
-  version 2.1 of the License, or (at your option) any later version.
-
-  This library is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the GNU Lesser General Public License for more details.
-
-  You should have received a copy of the GNU Lesser General Public
-  License along with this library; if not, write to the Free Software
-  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-  Modified 20 Aug 2014 by MediaTek Inc.
-  
-*/
-
-/**
-  * \file syscalls_mtk.c
-  *
-  * Implementation of newlib syscall.
-  *
-  */
-
-/*----------------------------------------------------------------------------
- *        Headers
- *----------------------------------------------------------------------------*/
-
-
-#include "syscalls.h"
-
 #include <stdio.h>
-#include <stdarg.h>
 #if defined (  __GNUC__  ) /* GCC CS3 */
-  #include <sys/types.h>
-  #include <sys/stat.h>
+#include <sys/stat.h>
 #endif
-
-#include "vmsystem.h"
+#include "vmtype.h"
 #include "vmlog.h"
-#include "vmdatetime.h"
 #include "vmmemory.h"
 #include "vmdcl.h"
 #include "vmdcl_gpio.h"
 #include "vmdcl_pwm.h"
 
-#undef errno
-extern int errno ;
-extern int  _end ;
-
-unsigned int g_size = 1024*200;
-unsigned char * base_address = NULL;
-
-#define RESERVED_MEMORY_SIZE  500*1024
-
-extern void _exit( int status ) ;
-extern void _kill( int pid, int sig ) ;
-extern int _getpid ( void ) ;
-
 typedef VMINT (*vm_get_sym_entry_t)(char* symbol);
 vm_get_sym_entry_t vm_get_sym_entry;
 
-typedef VMUINT (*_vm_get_total_heap_size_t)(void);
-_vm_get_total_heap_size_t _vm_get_total_heap_size = NULL;
-VMUINT vm_get_total_heap_size(void)
-{
-    if (NULL == _vm_get_total_heap_size)
-        _vm_get_total_heap_size = (_vm_get_total_heap_size_t)vm_get_sym_entry((char*)"vm_get_total_heap_size");
+static unsigned int g_memory_size = 1024;
+static void* g_base_address = NULL;
 
-    if (NULL != _vm_get_total_heap_size)
-        return _vm_get_total_heap_size();
-    return 0;
+#define RESERVED_MEMORY_SIZE 500*1024
+
+
+int __g_errno = 0;
+
+ void __cxa_pure_virtual()
+{
+    while (1);
 }
 
-typedef VMINT (*_vm_set_time_t)(vm_date_time_t* time);
-_vm_set_time_t _vm_set_time = NULL;
-
-VMINT vm_set_time(vm_date_time_t* time)
+int * __errno()
 {
-    if (NULL == _vm_set_time)
-        _vm_set_time = (_vm_set_time_t)vm_get_sym_entry("vm_set_time");
-
-    if (NULL != _vm_set_time)
-        return _vm_set_time(time);
-
-    return (VMINT )-1;
+	return &__g_errno;
 }
+
 
 extern caddr_t _sbrk ( int incr )
 {
-    static unsigned char *heap = NULL ;
-    static unsigned char *base = NULL ;
-    unsigned char *prev_heap ;
+    static void* heap = NULL ;
+    static void* base = NULL ;
+    void* prev_heap ;
 
     if ( heap == NULL )
     {
-       base = (unsigned char *)base_address; 
-	if(base == NULL)
-	{
-		vm_log_fatal("malloc failed");
-	}
-	else
-	{
-		heap = base;
-		vm_log_info("init memory success");
-	}
+        base = (unsigned char *)g_base_address; 
+				if(base == NULL)
+				{
+					vm_log_fatal("malloc failed");
+				}
+				else
+				{
+					heap = base;
+					vm_log_info("init memory success");
+				}
     }
     
-    if (heap + incr > base + g_size) {
+    if (heap + incr > g_base_address + g_memory_size) 
+    {
         vm_log_fatal("memory not enough");
     }
     
@@ -120,7 +62,6 @@ extern caddr_t _sbrk ( int incr )
 
     return (caddr_t) prev_heap ;
 }
-
 
 extern int link( char *cOld, char *cNew )
 {
@@ -183,39 +124,30 @@ void __libc_init_array(void);
 
 void gcc_entry(unsigned int entry, unsigned int init_array_start, unsigned int count) 
 {
-  __init_array ptr;
-  int i;
-  VMUINT size = 0;
-
-  vm_get_sym_entry = (vm_get_sym_entry_t)entry;
-  
-  size = vm_get_total_heap_size();
-  
-  if(size == 0)
-  {
-  	base_address = vm_malloc(g_size);
-  }
-  else
-  {
-  	if(size > RESERVED_MEMORY_SIZE)
-		size -= RESERVED_MEMORY_SIZE;
+	unsigned int i;
+	__init_array ptr;
+	unsigned int size = 0;
+	vm_get_sym_entry = (vm_get_sym_entry_t)entry;
 	
-  	base_address = vm_malloc(size);
-    	g_size = size;
-}
+	size = vm_pmng_get_total_heap_size();
 
-  vm_log_info("init lib arrays");
+#if defined(__LINKIT_ONE__)
+ 	 if(size > RESERVED_MEMORY_SIZE)
+	 {
+		g_memory_size = size - RESERVED_MEMORY_SIZE;		
+ 	 }
+#endif
 
-  __libc_init_array();
-  
+  g_base_address = vm_malloc(g_memory_size);
+
   ptr = (__init_array)init_array_start;
-
   for (i = 1; i < count; i++)
   {
   		ptr[i]();
-  } 
-  vm_main();
+  }
+	vm_main();
 }
+
 
 #define VM_DCL_PIN_MODE_MAX 10
 
@@ -228,88 +160,63 @@ typedef struct{
 }VM_DCL_PIN_MUX;
 
 #if defined(__HDK_LINKIT_ONE_V1__)
-#define VM_DCL_PIN_TABLE_SIZE 19
+#define VM_DCL_PIN_TABLE_SIZE 26
 #elif defined(__HDK_LINKIT_ASSIST_2502__)
-#define VM_DCL_PIN_TABLE_SIZE 21
-#elif defined(__HDK_MT2502D_DEV_BOARD__)
-#define VM_DCL_PIN_TABLE_SIZE 21
+#define VM_DCL_PIN_TABLE_SIZE 15
 #else
 #define VM_DCL_PIN_TABLE_SIZE 1
 #endif
 
 #if defined(__HDK_LINKIT_ONE_V1__)
 const VM_DCL_PIN_MUX pinTable[VM_DCL_PIN_TABLE_SIZE] = {
-	{D0, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_UART, 0, 0 , 0, 0, 0, 0, 0, 0}},
-	{D1, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_UART, 0, 0 , 0, 0, 0, 0, 0, 0}},
-  	{D2, 20, 0, 0,  {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_PWM, VM_DCL_PIN_MODE_EINT, 0 , 0, 0, 0, 0, 0, 0}},
-	{D3, 11, 0, VM_DCL_PWM_1,  {VM_DCL_PIN_MODE_GPIO, 0, VM_DCL_PIN_MODE_EINT, VM_DCL_PIN_MODE_PWM , 0, 0, 0, 0, 0, 0}}, 
-	{D4, 0, 0, 0,  {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , 0, 0, 0, 0, 0, 0}},
- 	{D5, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , 0, 0, 0, 0, 0, 0}},
-	{D6, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , 0, 0, 0, 0, 0, 0}},
-	{D7, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , 0, 0, 0, 0, 0, 0}},
-  	{D8, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , 0, 0, 0, 0, 0, 0}},
-	{D9, 0, 0, VM_DCL_PWM_4,{VM_DCL_PIN_MODE_GPIO, 0, VM_DCL_PIN_MODE_PWM, 0 , 0, 0, 0, 0, 0, 0}},
-	{D10, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , VM_DCL_PIN_MODE_SPI, 0, 0, 0, 0, 0}},
-  	{D11, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , VM_DCL_PIN_MODE_SPI, 0, 0, 0, VM_DCL_PIN_MODE_SDIO, 0}},
-	{D12, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , VM_DCL_PIN_MODE_SPI, 0, 0, 0, VM_DCL_PIN_MODE_SDIO, 0}},
-	{D13, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , VM_DCL_PIN_MODE_SPI, 0, 0, 0, VM_DCL_PIN_MODE_SDIO, 0}},
-  	{D14, 0, 12, 0, {VM_DCL_PIN_MODE_GPIO, 0, VM_DCL_PIN_MODE_ADC, 0 , 0, 0, 0, 0, 0, 0}},
-  	{D15, 0, 15, 0, {VM_DCL_PIN_MODE_GPIO, 0, VM_DCL_PIN_MODE_ADC, 0 , 0, 0, 0, 0, 0, 0}},
-	{D16, 0, 13, 0, {VM_DCL_PIN_MODE_GPIO, 0, VM_DCL_PIN_MODE_ADC, 0 , 0, 0, 0, 0, 0, 0}},
-	{D18, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_I2C, 0, 0 , 0, 0, 0, 0, 0, 0}},
-    {D19, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_I2C, 0, 0 , 0, 0, 0, 0, 0, 0}}
+  {VM_PIN_D0, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_UART, 0, 0 , 0, 0, 0, 0, 0, 0}},
+  {VM_PIN_D1, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_UART, 0, 0 , 0, 0, 0, 0, 0, 0}},
+  {VM_PIN_D2, 20, 0, 0,  {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_PWM, VM_DCL_PIN_MODE_EINT, 0 , 0, 0, 0, 0, 0, 0}},
+  {VM_PIN_D3, 11, 0, VM_DCL_PWM_1,  {VM_DCL_PIN_MODE_GPIO, 0, VM_DCL_PIN_MODE_EINT, VM_DCL_PIN_MODE_PWM , 0, 0, 0, 0, 0, 0}}, 
+  {VM_PIN_D4, 0, 0, 0,  {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , 0, 0, 0, 0, 0, 0}},
+  {VM_PIN_D5, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , 0, 0, 0, 0, 0, 0}},
+  {VM_PIN_D6, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , 0, 0, 0, 0, 0, 0}},
+  {VM_PIN_D7, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , 0, 0, 0, 0, 0, 0}},
+  {VM_PIN_D8, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , 0, 0, 0, 0, 0, 0}},
+  {VM_PIN_D9, 0, 0, VM_DCL_PWM_4,{VM_DCL_PIN_MODE_GPIO, 0, VM_DCL_PIN_MODE_PWM, 0 , 0, 0, 0, 0, 0, 0}},
+  {VM_PIN_D10, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , VM_DCL_PIN_MODE_SPI, 0, 0, 0, 0, 0}},
+  {VM_PIN_D11, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , VM_DCL_PIN_MODE_SPI, 0, 0, 0, VM_DCL_PIN_MODE_SDIO, 0}},
+  {VM_PIN_D12, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , VM_DCL_PIN_MODE_SPI, 0, 0, 0, VM_DCL_PIN_MODE_SDIO, 0}},
+  {VM_PIN_D13, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , VM_DCL_PIN_MODE_SPI, 0, 0, 0, VM_DCL_PIN_MODE_SDIO, 0}},
+  {VM_PIN_D14, 0, 12, 0, {VM_DCL_PIN_MODE_GPIO, 0, VM_DCL_PIN_MODE_ADC, 0 , 0, 0, 0, 0, 0, 0}},
+  {VM_PIN_D15, 0, 15, 0, {VM_DCL_PIN_MODE_GPIO, 0, VM_DCL_PIN_MODE_ADC, 0 , 0, 0, 0, 0, 0, 0}},
+  {VM_PIN_D16, 0, 13, 0, {VM_DCL_PIN_MODE_GPIO, 0, VM_DCL_PIN_MODE_ADC, 0 , 0, 0, 0, 0, 0, 0}},
+  {VM_PIN_D18, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_I2C, 0, 0 , 0, 0, 0, 0, 0, 0}},
+  {VM_PIN_D19, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_I2C, 0, 0 , 0, 0, 0, 0, 0, 0}},
+  {VM_PIN_A0, 0, 12, 0, {VM_DCL_PIN_MODE_GPIO, 0, VM_DCL_PIN_MODE_ADC, 0 , 0, 0, 0, 0, 0, 0}},
+  {VM_PIN_A1, 0, 15, 0, {VM_DCL_PIN_MODE_GPIO, 0, VM_DCL_PIN_MODE_ADC, 0 , 0, 0, 0, 0, 0, 0}},
+  {VM_PIN_A2, 0, 13, 0, {VM_DCL_PIN_MODE_GPIO, 0, VM_DCL_PIN_MODE_ADC, 0 , 0, 0, 0, 0, 0, 0}},
+  {VM_PIN_SDA, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_I2C, 0, 0 , 0, 0, 0, 0, 0, 0}},
+  {VM_PIN_SCL, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_I2C, 0, 0 , 0, 0, 0, 0, 0, 0}},
+  {VM_PIN_RX, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_UART, 0, 0 , 0, 0, 0, 0, 0, 0}},
+  {VM_PIN_TX, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_UART, 0, 0 , 0, 0, 0, 0, 0, 0}}
 };      
 #elif defined(__HDK_LINKIT_ASSIST_2502__)
 static const VM_DCL_PIN_MUX pinTable[VM_DCL_PIN_TABLE_SIZE] = {
-	{D0, 11, 0, VM_DCL_PWM_1, {VM_DCL_PIN_MODE_GPIO, 0, VM_DCL_PIN_MODE_EINT, VM_DCL_PIN_MODE_PWM , 0, 0, 0, 0, 0, 0}},
-	{D1, 0, 0, VM_DCL_PWM_4, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , VM_DCL_PIN_MODE_PWM, 0, 0, 0, 0, 0}},
-    {D2, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , VM_DCL_PIN_MODE_SPI, 0, 0, 0, 0, 0}},
-	{D3, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , VM_DCL_PIN_MODE_SPI, 0, 0, 0, 0, 0}},
-	{D4, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , VM_DCL_PIN_MODE_SPI, 0, 0, 0, 0, 0}},
-    {D5, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , VM_DCL_PIN_MODE_SPI, 0, 0, 0, 0, 0}},
-	{D6, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_I2C, 0, 0 , 0, 0, 0, 0, 0, 0}},
-	{D7, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_I2C, 0, 0 , 0, 0, 0, 0, 0, 0}},
-    {D8, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_UART, 0, 0 , 0, 0, 0, 0, 0, 0}},
-	{D9, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_UART, 0, 0 , 0, 0, 0, 0, 0, 0}},
-	{D10, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , 0, 0, 0, 0, 0, 0}},
-    {D11, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , 0, 0, 0, 0, 0, 0}},
-	{D12, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_DBI_C, 0, 0 , 0, 0, 0, 0, 0, 0}},
-	{D13, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_DBI_C, 0, 0 , 0, 0, 0, 0, 0, 0}},
-    {D14, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_DBI_C, 0, 0 , 0, 0, 0, 0, 0, 0}},
-	{D15, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_DBI_C, 0, 0 , 0, 0, 0, 0, 0, 0}},
-	{A0, 0, 4, 0, {VM_DCL_PIN_MODE_GPIO, 0, VM_DCL_PIN_MODE_ADC, 0 , 0, 0, 0, 0, 0, 0}},
-    {A1, 0, 12, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_EINT, VM_DCL_PIN_MODE_ADC, 0 , 0, 0, 0, 0, 0, 0}},
-    {A2, 1, 15, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_EINT, VM_DCL_PIN_MODE_ADC, 0 , 0, 0, 0, 0, 0, 0}},
-	{A3, 2, 13, 0,  {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_EINT, VM_DCL_PIN_MODE_ADC, 0 , 0, 0, 0, 0, 0, 0}},
-	{E0, 23, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, VM_DCL_PIN_MODE_EINT, 0 , 0, 0, 0, 0, 0, 0}}
-};
-#elif defined(__HDK_MT2502D_DEV_BOARD__)
-static const VM_DCL_PIN_MUX pinTable[VM_DCL_PIN_TABLE_SIZE] = {
-	{D0, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, VM_DCL_PIN_MODE_EINT, VM_DCL_PIN_MODE_PWM , 0, 0, 0, 0, 0, 0}},
-	{D1, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , VM_DCL_PIN_MODE_PWM, 0, 0, 0, 0, 0}},
-  {D2, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , VM_DCL_PIN_MODE_SPI, 0, 0, 0, 0, 0}},
-	{D3, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , VM_DCL_PIN_MODE_SPI, 0, 0, 0, 0, 0}},
-	{D4, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , VM_DCL_PIN_MODE_SPI, 0, 0, 0, 0, 0}},
-  {D5, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , VM_DCL_PIN_MODE_SPI, 0, 0, 0, 0, 0}},
-	{D6, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_I2C, 0, 0 , 0, 0, 0, 0, 0, 0}},
-	{D7, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_I2C, 0, 0 , 0, 0, 0, 0, 0, 0}},
-  {D8, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_UART, 0, 0 , 0, 0, 0, 0, 0, 0}},
-	{D9, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_UART, 0, 0 , 0, 0, 0, 0, 0, 0}},
-	{D10, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , 0, 0, 0, 0, 0, 0}},
-  {D11, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , 0, 0, 0, 0, 0, 0}},
-	{D12, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_DBI_C, 0, 0 , 0, 0, 0, 0, 0, 0}},
-	{D13, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_DBI_C, 0, 0 , 0, 0, 0, 0, 0, 0}},
-  {D14, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_DBI_C, 0, 0 , 0, 0, 0, 0, 0, 0}},
-	{D15, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_DBI_C, 0, 0 , 0, 0, 0, 0, 0, 0}},
-	{A0, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , 0, 0, 0, 0, 0, 0}},
-  {A1, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, VM_DCL_PIN_MODE_ADC, 0 , 0, 0, 0, 0, 0, 0}},
-  {A2, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, VM_DCL_PIN_MODE_ADC, 0 , 0, 0, 0, 0, 0, 0}},
-	{A3, 0, 0, 0,  {VM_DCL_PIN_MODE_GPIO, 0, VM_DCL_PIN_MODE_ADC, 0 , 0, 0, 0, 0, 0, 0}},
-	{E0, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , 0, 0, 0, 0, 0, 0}}
+  {VM_PIN_P0, 11, 0, VM_DCL_PWM_1, {VM_DCL_PIN_MODE_GPIO, 0, VM_DCL_PIN_MODE_EINT, VM_DCL_PIN_MODE_PWM , 0, 0, 0, 0, 0, 0}},
+  {VM_PIN_P1, 0, 0, VM_DCL_PWM_4, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , VM_DCL_PIN_MODE_PWM, 0, 0, 0, 0, 0}},
+  {VM_PIN_P2, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , VM_DCL_PIN_MODE_SPI, 0, 0, 0, 0, 0}},
+  {VM_PIN_P3, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , VM_DCL_PIN_MODE_SPI, 0, 0, 0, 0, 0}},
+  {VM_PIN_P4, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , VM_DCL_PIN_MODE_SPI, 0, 0, 0, 0, 0}},
+  {VM_PIN_P5, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0 , VM_DCL_PIN_MODE_SPI, 0, 0, 0, 0, 0}},
+  {VM_PIN_P6, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_I2C, 0, 0 , 0, 0, 0, 0, 0, 0}},
+  {VM_PIN_P7, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_I2C, 0, 0 , 0, 0, 0, 0, 0, 0}},
+  {VM_PIN_P8, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_UART, 0, 0 , 0, 0, 0, 0, 0, 0}},
+  {VM_PIN_P9, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_UART, 0, 0 , 0, 0, 0, 0, 0, 0}},
+  {VM_PIN_P10, 0, 0, 0, {0, 0, VM_DCL_PIN_MODE_ADC, 0 , 0, 0, 0, 0, 0, 0}},
+  {VM_PIN_P11, 0, 12, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_EINT, VM_DCL_PIN_MODE_ADC, 0 , 0, 0, 0, 0, 0, 0}},
+  {VM_PIN_P12, 1, 15, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_EINT, VM_DCL_PIN_MODE_ADC, 0 , 0, 0, 0, 0, 0, 0}},
+  {VM_PIN_P13, 2, 13, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_EINT, VM_DCL_PIN_MODE_ADC, 0 , 0, 0, 0, 0, 0, 0}},
+  {VM_PIN_P14, 23, 0, 0, {0, 0, VM_DCL_PIN_MODE_EINT, 0 , 0, 0, 0, 0, 0, 0}}
 };
 #else
 static const VM_DCL_PIN_MUX pinTable[VM_DCL_PIN_TABLE_SIZE] = {
-	{D0, 0, 0, 0, {0, 0, 0, 0 , 0, 0, 0, 0, 0, 0}}
+	{VM_PIN_P0, 0, 0, 0, {0, 0, 0, 0 , 0, 0, 0, 0, 0, 0}}
 };
 #endif
 
