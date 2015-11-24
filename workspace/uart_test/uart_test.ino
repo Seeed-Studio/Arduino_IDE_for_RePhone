@@ -10,6 +10,7 @@ unsigned char data = 0;
 void loop() 
 {
      Serial1.print("New data is ");
+	 Serial.print("New data is ");
      Serial1.println(data++);
      Serial.println(data++);
      delay(1000);

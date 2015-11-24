@@ -28,6 +28,7 @@
 #include "vmthread.h"
 #include "vmsystem.h"
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -197,7 +198,7 @@ void analogWrite(uint32_t ulPin, uint32_t ulValue) {
 
 		if(pwm_handle == VM_DCL_HANDLE_INVALID)
 		{
-			pwm_handle = vm_dcl_open(VM_DCL_PWM_1,vm_dcl_get_owner_id()); // VM_DCL_PWM_1 ??
+			pwm_handle = vm_dcl_open(VM_DCL_PWM_1,vm_dcl_get_owner_id());
 			vm_dcl_control(pwm_handle,VM_PWM_CMD_START,0);
 			setPinHandle(ulPin, pwm_handle);
 		}
@@ -219,7 +220,7 @@ void analogWrite(uint32_t ulPin, uint32_t ulValue) {
 
 		if(pwm_handle == VM_DCL_HANDLE_INVALID)
 		{
-			pwm_handle = vm_dcl_open(VM_DCL_PWM_4,vm_dcl_get_owner_id()); // VM_DCL_PWM_1 ??
+			pwm_handle = vm_dcl_open(VM_DCL_PWM_4,vm_dcl_get_owner_id());
 			vm_dcl_control(pwm_handle,VM_PWM_CMD_START,0);
 			setPinHandle(ulPin, pwm_handle);
 		}
@@ -241,7 +242,7 @@ void analogWrite(uint32_t ulPin, uint32_t ulValue) {
 
 		if(pwm_handle == VM_DCL_HANDLE_INVALID)
 		{
-			pwm_handle = vm_dcl_open(VM_DCL_PWM_4,vm_dcl_get_owner_id()); // VM_DCL_PWM_4 ??
+			pwm_handle = vm_dcl_open(VM_DCL_PWM_4,vm_dcl_get_owner_id());
 			vm_dcl_control(pwm_handle,VM_PWM_CMD_START,0);
 			setPinHandle(ulPin, pwm_handle);
 		}
@@ -279,7 +280,7 @@ void analogWriteAdvance(uint32_t ulPin, uint32_t ulClock, uint32_t ulDiv, uint32
 		
 		if(pwm_handle == VM_DCL_HANDLE_INVALID)
 		{
-			pwm_handle = vm_dcl_open(VM_DCL_PWM_1,vm_dcl_get_owner_id()); // VM_DCL_PWM_1 ??
+			pwm_handle = vm_dcl_open(VM_DCL_PWM_1,vm_dcl_get_owner_id());
 			vm_dcl_control(pwm_handle,VM_PWM_CMD_START,0);
 			setPinHandle(ulPin, pwm_handle);
 		}
@@ -301,7 +302,7 @@ void analogWriteAdvance(uint32_t ulPin, uint32_t ulClock, uint32_t ulDiv, uint32
 		
 		if(pwm_handle == VM_DCL_HANDLE_INVALID)
 		{
-			pwm_handle = vm_dcl_open(VM_DCL_PWM_4,vm_dcl_get_owner_id()); // VM_DCL_PWM_4 ??
+			pwm_handle = vm_dcl_open(VM_DCL_PWM_4,vm_dcl_get_owner_id());
 			vm_dcl_control(pwm_handle,VM_PWM_CMD_START,0);
 			setPinHandle(ulPin, pwm_handle);
 		}
@@ -323,7 +324,7 @@ void analogWriteAdvance(uint32_t ulPin, uint32_t ulClock, uint32_t ulDiv, uint32
 		
 		if(pwm_handle == VM_DCL_HANDLE_INVALID)
 		{
-			pwm_handle = vm_dcl_open(VM_DCL_PWM_4,vm_dcl_get_owner_id()); // VM_DCL_PWM_4 ??
+			pwm_handle = vm_dcl_open(VM_DCL_PWM_4,vm_dcl_get_owner_id());
 			vm_dcl_control(pwm_handle,VM_PWM_CMD_START,0);
 			setPinHandle(ulPin, pwm_handle);
 		}
