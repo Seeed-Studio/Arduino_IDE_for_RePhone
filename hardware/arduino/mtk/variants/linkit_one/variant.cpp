@@ -41,6 +41,10 @@ PinDescription g_APinDescription[]=
   { VM_DCL_HANDLE_INVALID, 49, PIO_END, 1  },      // D14 /* Pin mux, VM_DCL_PIN_MODE_GPIO */
   { VM_DCL_HANDLE_INVALID, 50, PIO_END, 1  },      // D15 /* Pin mux, VM_DCL_PIN_MODE_GPIO */
   
+  { VM_DCL_HANDLE_INVALID, 12, PIO_END, 1  },      // D16
+  { VM_DCL_HANDLE_INVALID, 15, PIO_END, 1  },      // D17
+  { VM_DCL_HANDLE_INVALID, 17, PIO_END, 1  },      // D18
+  
   { VM_DCL_HANDLE_INVALID, 57, PIO_END, 0  },      // A0 // gpio can not use it ??
   
   { VM_DCL_HANDLE_INVALID, 0,  PIO_END, 0  },      // A1 /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_ADC / VM_DCL_PIN_MODE_EINT */
@@ -55,10 +59,7 @@ PinDescription g_APinDescription[]=
   { VM_DCL_HANDLE_INVALID, 46, PIO_END, 1  },      // E4 /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_EINT */
   { VM_DCL_HANDLE_INVALID, 30, PIO_END, 1  },      // E5 /* Pin mux, VM_DCL_PIN_MODE_GPIO / VM_DCL_PIN_MODE_EINT */
   
-  { VM_DCL_HANDLE_INVALID, 12, PIO_END, 1  },      // GPIO12 // wait for test ??
   { VM_DCL_HANDLE_INVALID, 14, PIO_END, 1  },      // GPIO14 // wait for test ??
-  { VM_DCL_HANDLE_INVALID, 15, PIO_END, 1  },      // GPIO15 // wait for test ??
-  { VM_DCL_HANDLE_INVALID, 17, PIO_END, 1  },      // GPIO17 // wait for test ??
   { VM_DCL_HANDLE_INVALID, 18, PIO_END, 1  },      // GPIO18 // wait for test ??
   { VM_DCL_HANDLE_INVALID, 20, PIO_END, 1  },      // GPIO20 // wait for test ??
   { VM_DCL_HANDLE_INVALID, 30, PIO_END, 1  },      // GPIO30 // wait for test ??
@@ -96,8 +97,7 @@ boolean changePinType(uint32_t ulPin, uint32_t ulPinType, VM_DCL_HANDLE* handle)
 
 	if(ulPinType == PIO_DIGITAL)
 	{
-	    if(ulPin == 20)return false;
-	    //if(ulPin == 16 || ulPin == 20)return false;
+	    if(ulPin == A0 || ulPin == E0)return false; // gpio57 & gpio52
 		
 		if(g_APinDescription[ulPin].ulHandle != VM_DCL_HANDLE_INVALID)
 		{
@@ -131,7 +131,8 @@ boolean changePinType(uint32_t ulPin, uint32_t ulPinType, VM_DCL_HANDLE* handle)
 				vm_dcl_control(gpio_handle,VM_DCL_GPIO_COMMAND_SET_MODE_1,NULL);
 				vm_dcl_control(gpio_handle,VM_DCL_GPIO_COMMAND_SET_DIRECTION_IN, NULL);
 			break;
-			case E0:case E1:case E2:case E4://gpio52,gpio13,gpio18,gpio46
+			//case E0://gpio52
+			case E1:case E2:case E4://gpio13,gpio18,gpio46
 				vm_dcl_control(gpio_handle,VM_DCL_GPIO_COMMAND_SET_MODE_2,NULL);
 				vm_dcl_control(gpio_handle,VM_DCL_GPIO_COMMAND_SET_DIRECTION_IN, NULL);
 			break;

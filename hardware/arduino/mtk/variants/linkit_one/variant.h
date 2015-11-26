@@ -45,22 +45,19 @@
 #endif
 
 
-static const uint8_t A0  = 16;/*analog input pin A0*/
-static const uint8_t A1  = 17;/*analog input pin A1*/
-static const uint8_t A2  = 18;/*analog input pin A2*/
-static const uint8_t A3  = 19;/*analog input pin A3*/
+static const uint8_t A0  = 19;/*analog input pin A0*/
+static const uint8_t A1  = 20;/*analog input pin A1*/
+static const uint8_t A2  = 21;/*analog input pin A2*/
+static const uint8_t A3  = 22;/*analog input pin A3*/
 
-static const uint8_t E0  = 20;/*interrup input pin E0*/
-static const uint8_t E1  = 21;/*interrup input pin E1*/
-static const uint8_t E2  = 22;/*interrup input pin E2*/
-static const uint8_t E3  = 23;/*interrup input pin E3*/
-static const uint8_t E4  = 24;/*interrup input pin E4*/
-static const uint8_t E5  = 25;/*interrup input pin E5*/
+static const uint8_t E0  = 23;/*interrup input pin E0*/
+static const uint8_t E1  = 24;/*interrup input pin E1*/
+static const uint8_t E2  = 25;/*interrup input pin E2*/
+static const uint8_t E3  = 26;/*interrup input pin E3*/
+static const uint8_t E4  = 27;/*interrup input pin E4*/
+static const uint8_t E5  = 28;/*interrup input pin E5*/
 
-static const uint8_t GPIO12  = 26;/*digetal pin GPIO12*/
-static const uint8_t GPIO14  = 27;/*digetal pin GPIO14*/
-static const uint8_t GPIO15  = 28;/*digetal pin GPIO15*/
-static const uint8_t GPIO17  = 29;/*digetal pin GPIO17*/
+static const uint8_t GPIO14  = 29;/*digetal pin GPIO14*/
 static const uint8_t GPIO18  = 30;/*digetal pin GPIO18*/
 static const uint8_t GPIO20  = 31;/*digetal pin GPIO20*/
 static const uint8_t GPIO30  = 32;/*digetal pin GPIO30*/

@@ -1,7 +1,7 @@
 
-#define    LED_B    GPIO12
-#define    LED_G    GPIO15
-#define    LED_R    GPIO17
+#define    LED_B    16
+#define    LED_G    17
+#define    LED_R    18
 
 #define    LED_ON     0
 #define    LED_OFF    1
