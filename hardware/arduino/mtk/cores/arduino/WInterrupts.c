@@ -29,14 +29,14 @@ typedef struct _Exinterrupts_Struct
 
 
 static Exinterrupts_Struct gExinterruptsPio[EXTERNAL_NUM_INTERRUPTS] = {
-    {VM_DCL_HANDLE_INVALID, 17,  0, 0, NULL},//A1, gpio0
-    {VM_DCL_HANDLE_INVALID, 18,  1, 0, NULL},//A2, gpio1
-	{VM_DCL_HANDLE_INVALID, 19,  2, 0, NULL},//A3, gpio2
-    {VM_DCL_HANDLE_INVALID, 20, 23, 0, NULL},//E0, agpio52
-	{VM_DCL_HANDLE_INVALID, 21, 11, 0, NULL},//E1, gpio13
-	{VM_DCL_HANDLE_INVALID, 22, 13, 0, NULL},//E2, gpio18
-	{VM_DCL_HANDLE_INVALID, 23, 15, 0, NULL},//E3, gpio25
-	{VM_DCL_HANDLE_INVALID, 24, 20, 0, NULL},//E4, gpio46
+    {VM_DCL_HANDLE_INVALID, 20,  0, 0, NULL},//A1, gpio0
+    {VM_DCL_HANDLE_INVALID, 21,  1, 0, NULL},//A2, gpio1
+	{VM_DCL_HANDLE_INVALID, 22,  2, 0, NULL},//A3, gpio2
+    {VM_DCL_HANDLE_INVALID, 23, 23, 0, NULL},//E0, agpio52
+	{VM_DCL_HANDLE_INVALID, 24, 11, 0, NULL},//E1, gpio13
+	{VM_DCL_HANDLE_INVALID, 25, 13, 0, NULL},//E2, gpio18
+	{VM_DCL_HANDLE_INVALID, 26, 15, 0, NULL},//E3, gpio25
+	{VM_DCL_HANDLE_INVALID, 27, 20, 0, NULL},//E4, gpio46
 };
 
 #ifdef __cplusplus
@@ -73,7 +73,7 @@ void attachInterrupt(uint32_t pin, void (*callback)(void), uint32_t mode)
     vm_dcl_eint_control_hw_debounce_t deboun_time;
     VM_DCL_STATUS status;
 	
-	pin = pin - 17;
+	pin = pin - A1;
 	
     if(pin > EXTERNAL_NUM_INTERRUPTS)
 		return ;
@@ -192,7 +192,7 @@ void attachInterrupt(uint32_t pin, void (*callback)(void), uint32_t mode)
 
 void detachInterrupt(uint32_t pin)
 {
-	pin = pin - 17;
+	pin = pin - A1;
 	
     if(VM_DCL_HANDLE_INVALID != gExinterruptsPio[pin].handle)
     {
