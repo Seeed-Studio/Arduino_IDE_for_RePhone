@@ -51,10 +51,10 @@ typedef struct _ADCPinDescription
 
 ADCPinDescription g_ADCPinArray[ADC_PIN_NUM] = 
 {
-	{ 16, 4 },
-	{ 17, 12 },
-	{ 18, 15 },
-	{ 19, 13 }
+	{ 19, 4 },
+	{ 20, 12 },
+	{ 21, 15 },
+	{ 22, 13 }
 };
 
 /**/
