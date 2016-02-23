@@ -29,7 +29,7 @@ boolean no_interrupt = 1;
 uint32_t millis( void )
 {
 // todo: ensure no interrupts
-    return vm_time_ust_get_count() ;
+    return vm_time_ust_get_count() / 1000;
 }
 
 // Interrupt-compatible version of micros
