@@ -5,8 +5,8 @@
 
 void setup()
 {
-    Serial1.begin(115200);
-    Serial1.print("NFC test.\r\n");
+    Serial.begin(115200);
+    Serial.print("NFC test.\r\n");
 }
     
 void loop()
@@ -19,7 +19,7 @@ void loop()
         LNFC.adapter_init();
         str = LNFC.adapter_get_uid();
         sprintf(buffer, "NFC uid is 0x%x 0x%x 0x%x 0x%x\r\n", str[2],str[3],str[4],str[5]);
-        Serial1.print(buffer);
+        Serial.print(buffer);
     }
     delay(1000);
 }

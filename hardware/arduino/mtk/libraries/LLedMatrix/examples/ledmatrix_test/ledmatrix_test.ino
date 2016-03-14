@@ -3,8 +3,8 @@
 
 void setup() 
 {
-    Serial1.begin(115200);
-    Serial1.print("Led Matrix test.\r\n");
+    Serial.begin(115200);
+    Serial.print("Led Matrix test.\r\n");
     LedMatrix.check_on_line();
 }
 

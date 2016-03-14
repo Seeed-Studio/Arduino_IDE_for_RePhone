@@ -6,8 +6,8 @@ unsigned long sysData = 0;
 
 void setup()
 {
-    Serial1.begin(115200);
-    Serial1.print("LCD display test.\r\n");
+    Serial.begin(115200);
+    Serial.print("LCD display test.\r\n");
     Lcd.init();
     Lcd.font_init();
     Lcd.back_light_level(50);
@@ -27,7 +27,7 @@ void setup()
 void loop()
 {
     Lcd.draw_number(0, 20, sysData++, 0xffff00, 0);
-    Serial1.print("ABC.\r\n");
+    Serial.print("ABC.\r\n");
     delay(1000);
 }
 

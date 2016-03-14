@@ -10,8 +10,8 @@ int Y = 0;
         
 void setup()
 {
-    //Serial1.begin(115200);
-    //Serial1.print("Touch test.\r\n");
+    //Serial.begin(115200);
+    //Serial.print("Touch test.\r\n");
     Tp.Init();
     //Tp.Event_handle(touch_event_handle);
     Lcd.init();

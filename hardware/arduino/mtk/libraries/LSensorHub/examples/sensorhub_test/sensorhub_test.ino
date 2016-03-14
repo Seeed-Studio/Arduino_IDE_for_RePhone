@@ -4,8 +4,8 @@
 
 void setup()
 {
-    Serial1.begin(115200);
-    Serial1.print("Sensor Hub test.\r\n");
+    Serial.begin(115200);
+    Serial.print("Sensor Hub test.\r\n");
     Lcd.init();
     Lcd.font_init();
     Lcd.back_light_level(50);

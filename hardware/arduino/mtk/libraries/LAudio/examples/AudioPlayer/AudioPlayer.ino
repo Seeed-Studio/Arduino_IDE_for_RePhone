@@ -76,7 +76,7 @@ void loop()
         Serial.println(status);
     }
 
-    if(status == AudioEndOfFile)
+    if(status == AudioEndOfFile || status == AudioResume)
     {
         Status_Value = PLAY;
         Change_Status(Status_Value);

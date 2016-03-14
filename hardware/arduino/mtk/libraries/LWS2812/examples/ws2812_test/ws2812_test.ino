@@ -3,8 +3,8 @@
 
 void setup() 
 {
-    Serial1.begin(115200);
-    Serial1.print("Ws2812 test.\r\n");
+    Serial.begin(115200);
+    Serial.print("Ws2812 test.\r\n");
     LWs2812.check_on_line();
 }
 
