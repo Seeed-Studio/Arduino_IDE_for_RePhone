@@ -1,0 +1,14 @@
+This package contains Arduino IDE, RePhone SDK and tools
+
+* The main body of Arduino IDE uses the GPL v2 license, the source code can be found at https://github.com/arduino/Arduino. 
+* The Arduino core libraries and examples use the LGPL v2.1 license.
+* The RePhone SDK uses the LGPL v2.1 license.
+* Some changes as follows:
+    0. Rename "arduino.exe" to "Arduino_IDE_for_RePhone.exe", and delete the "arduino_debug.exe"
+    1. Delete the library file in path ..\arduino\libraries
+    2. Add the RePhone driver files to the path ..\arduino\drivers.
+    3. Add the RePhone firmware update tool to the path ..\arduino\hardware\tools
+    4. Add the RePhone development files to the path ..\arduino\hardware\arduino
+    5. Add the RePhone example codes to the path ..\arduino\workspace
+    
+* All the driver and firmware update tool are come from MediaTek_LinkIt_Assist_2502_SDK_2_0_46
