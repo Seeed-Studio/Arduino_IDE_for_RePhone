@@ -148,17 +148,17 @@ void LCD_ClearAll_ST7789S(VMUINT16 data)
 void lcd_init_st7789s(VMUINT32 bkground, void **buf_addr)
 {  
   // Do HW Reset
-
-  vm_dcl_control(lcd_reset_handle, VM_DCL_GPIO_COMMAND_WRITE_HIGH, NULL);
-  vm_drv_lcd_delay_ms(1);
-  vm_dcl_control(lcd_reset_handle, VM_DCL_GPIO_COMMAND_WRITE_LOW, NULL);
-  vm_drv_lcd_delay_ms(10);
-  vm_dcl_control(lcd_reset_handle, VM_DCL_GPIO_COMMAND_WRITE_HIGH, NULL);
-  vm_drv_lcd_delay_ms(120);
-
+	vm_dcl_control(lcd_reset_handle, VM_DCL_GPIO_COMMAND_WRITE_HIGH, NULL);
+	vm_drv_lcd_delay_ms(1);
+	vm_dcl_control(lcd_reset_handle, VM_DCL_GPIO_COMMAND_WRITE_LOW, NULL);
+	vm_drv_lcd_delay_ms(10);
+	vm_dcl_control(lcd_reset_handle, VM_DCL_GPIO_COMMAND_WRITE_HIGH, NULL);
+	vm_drv_lcd_delay_ms(120);
+  
 	LCD_CtrlWrite_ST7789S(0x11);
 	vm_drv_lcd_delay_ms(120);
 	
+#ifdef _TOUCH_SCREEN_V1_0_
 	LCD_CtrlWrite_ST7789S(0x36);
 	LCD_DataWrite_ST7789S(0x00);// C0 40 60
 		
@@ -182,90 +182,164 @@ void lcd_init_st7789s(VMUINT32 bkground, void **buf_addr)
 	
 	LCD_CtrlWrite_ST7789S(0xB2);
 	LCD_DataWrite_ST7789S(0x1C);
-  LCD_DataWrite_ST7789S(0x1C);
-  LCD_DataWrite_ST7789S(0x01);
-  LCD_DataWrite_ST7789S(0xFF);
-  LCD_DataWrite_ST7789S(0x33);
+    LCD_DataWrite_ST7789S(0x1C);
+    LCD_DataWrite_ST7789S(0x01);
+    LCD_DataWrite_ST7789S(0xFF);
+    LCD_DataWrite_ST7789S(0x33);
 
+    LCD_CtrlWrite_ST7789S(0xB3);
+    LCD_DataWrite_ST7789S(0x10);
+    LCD_DataWrite_ST7789S(0xFF);	  // 0x05
+    LCD_DataWrite_ST7789S(0x0F);
 
-  LCD_CtrlWrite_ST7789S(0xB3);
-  LCD_DataWrite_ST7789S(0x10);
-  LCD_DataWrite_ST7789S(0xFF);	  // 0x05
-  LCD_DataWrite_ST7789S(0x0F);
+    LCD_CtrlWrite_ST7789S(0xB4);
+    LCD_DataWrite_ST7789S(0x0B);
 
-  LCD_CtrlWrite_ST7789S(0xB4);
-  LCD_DataWrite_ST7789S(0x0B);
+    LCD_CtrlWrite_ST7789S(0xB5);
+    LCD_DataWrite_ST7789S(0x9F);
 
-  LCD_CtrlWrite_ST7789S(0xB5);
-  LCD_DataWrite_ST7789S(0x9F);
+    LCD_CtrlWrite_ST7789S(0xB7);
+    LCD_DataWrite_ST7789S(0x35);
 
-  LCD_CtrlWrite_ST7789S(0xB7);
-  LCD_DataWrite_ST7789S(0x35);
+    LCD_CtrlWrite_ST7789S(0xBB);
+    LCD_DataWrite_ST7789S(0x28);
 
-  LCD_CtrlWrite_ST7789S(0xBB);
-  LCD_DataWrite_ST7789S(0x28);
+    LCD_CtrlWrite_ST7789S(0xBC);
+    LCD_DataWrite_ST7789S(0xEC);
 
-  LCD_CtrlWrite_ST7789S(0xBC);
-  LCD_DataWrite_ST7789S(0xEC);
+    LCD_CtrlWrite_ST7789S(0xBD);
+    LCD_DataWrite_ST7789S(0xFE);
 
-  LCD_CtrlWrite_ST7789S(0xBD);
-  LCD_DataWrite_ST7789S(0xFE);
+    LCD_CtrlWrite_ST7789S(0xC0);
+    LCD_DataWrite_ST7789S(0x2C);
 
-  LCD_CtrlWrite_ST7789S(0xC0);
-  LCD_DataWrite_ST7789S(0x2C);
+    LCD_CtrlWrite_ST7789S(0xC2);
+    LCD_DataWrite_ST7789S(0x01);
 
-  LCD_CtrlWrite_ST7789S(0xC2);
-  LCD_DataWrite_ST7789S(0x01);
+    LCD_CtrlWrite_ST7789S(0xC3);
+    LCD_DataWrite_ST7789S(0x1E); 
 
-  LCD_CtrlWrite_ST7789S(0xC3);
-  LCD_DataWrite_ST7789S(0x1E); 
+    LCD_CtrlWrite_ST7789S(0xC4);
+    LCD_DataWrite_ST7789S(0x20);
 
-  LCD_CtrlWrite_ST7789S(0xC4);
-  LCD_DataWrite_ST7789S(0x20);
+    LCD_CtrlWrite_ST7789S(0xC6);		  // Normal mode frame rate
+    LCD_DataWrite_ST7789S(0x1E);	// 0x0f 60Hz while FPA and BPA = 0x0C
 
-  LCD_CtrlWrite_ST7789S(0xC6);		  // Normal mode frame rate
-  LCD_DataWrite_ST7789S(0x1E);	// 0x0f 60Hz while FPA and BPA = 0x0C
+    LCD_CtrlWrite_ST7789S(0xD0);
+    LCD_DataWrite_ST7789S(0xA4);
+    LCD_DataWrite_ST7789S(0xA1);
 
-  LCD_CtrlWrite_ST7789S(0xD0);
-  LCD_DataWrite_ST7789S(0xA4);
-  LCD_DataWrite_ST7789S(0xA1);
+    LCD_CtrlWrite_ST7789S(0xE0);
+    LCD_DataWrite_ST7789S(0xD0);
+    LCD_DataWrite_ST7789S(0x00);
+    LCD_DataWrite_ST7789S(0x00);
+    LCD_DataWrite_ST7789S(0x08);
+    LCD_DataWrite_ST7789S(0x07);
+    LCD_DataWrite_ST7789S(0x05);
+    LCD_DataWrite_ST7789S(0x29);
+    LCD_DataWrite_ST7789S(0x54);
+    LCD_DataWrite_ST7789S(0x41);
+    LCD_DataWrite_ST7789S(0x3C);
+    LCD_DataWrite_ST7789S(0x17);
+    LCD_DataWrite_ST7789S(0x15);
+    LCD_DataWrite_ST7789S(0x1A);
+    LCD_DataWrite_ST7789S(0x20);
 
-  LCD_CtrlWrite_ST7789S(0xE0);
-  LCD_DataWrite_ST7789S(0xD0);
-  LCD_DataWrite_ST7789S(0x00);
-  LCD_DataWrite_ST7789S(0x00);
-  LCD_DataWrite_ST7789S(0x08);
-  LCD_DataWrite_ST7789S(0x07);
-  LCD_DataWrite_ST7789S(0x05);
-  LCD_DataWrite_ST7789S(0x29);
-  LCD_DataWrite_ST7789S(0x54);
-  LCD_DataWrite_ST7789S(0x41);
-  LCD_DataWrite_ST7789S(0x3C);
-  LCD_DataWrite_ST7789S(0x17);
-  LCD_DataWrite_ST7789S(0x15);
-  LCD_DataWrite_ST7789S(0x1A);
-  LCD_DataWrite_ST7789S(0x20);
+    LCD_CtrlWrite_ST7789S(0xE1);
+    LCD_DataWrite_ST7789S(0xD0);
+    LCD_DataWrite_ST7789S(0x00);
+    LCD_DataWrite_ST7789S(0x00);
+    LCD_DataWrite_ST7789S(0x08);
+    LCD_DataWrite_ST7789S(0x07);
+    LCD_DataWrite_ST7789S(0x04);
+    LCD_DataWrite_ST7789S(0x29);
+    LCD_DataWrite_ST7789S(0x44);
+    LCD_DataWrite_ST7789S(0x42);
+    LCD_DataWrite_ST7789S(0x3B);
+    LCD_DataWrite_ST7789S(0x16);
+    LCD_DataWrite_ST7789S(0x15);
+    LCD_DataWrite_ST7789S(0x1B);
+    LCD_DataWrite_ST7789S(0x1F);
+#endif
 
-  LCD_CtrlWrite_ST7789S(0xE1);
-  LCD_DataWrite_ST7789S(0xD0);
-  LCD_DataWrite_ST7789S(0x00);
-  LCD_DataWrite_ST7789S(0x00);
-  LCD_DataWrite_ST7789S(0x08);
-  LCD_DataWrite_ST7789S(0x07);
-  LCD_DataWrite_ST7789S(0x04);
-  LCD_DataWrite_ST7789S(0x29);
-  LCD_DataWrite_ST7789S(0x44);
-  LCD_DataWrite_ST7789S(0x42);
-  LCD_DataWrite_ST7789S(0x3B);
-  LCD_DataWrite_ST7789S(0x16);
-  LCD_DataWrite_ST7789S(0x15);
-  LCD_DataWrite_ST7789S(0x1B);
-  LCD_DataWrite_ST7789S(0x1F);
-			
+#ifdef _TOUCH_SCREEN_V1_1_
+	LCD_CtrlWrite_ST7789S (0x36);
+	LCD_DataWrite_ST7789S(0x00);
+	LCD_CtrlWrite_ST7789S (0x3a);
+	LCD_DataWrite_ST7789S(0x05);
+	LCD_CtrlWrite_ST7789S (0x21);
+	LCD_CtrlWrite_ST7789S (0x2a);
+	LCD_DataWrite_ST7789S(0x00);
+	LCD_DataWrite_ST7789S(0x00);
+	LCD_DataWrite_ST7789S(0x00);
+	LCD_DataWrite_ST7789S(0xef);
+	LCD_CtrlWrite_ST7789S (0x2b);
+	LCD_DataWrite_ST7789S(0x00);
+	LCD_DataWrite_ST7789S(0x00);
+	LCD_DataWrite_ST7789S(0x00);
+	LCD_DataWrite_ST7789S(0xef);
+	//--------------------------------ST7789V Frame rate setting----------------------------------//
+	LCD_CtrlWrite_ST7789S (0xb2);
+	LCD_DataWrite_ST7789S(0x0c);
+	LCD_DataWrite_ST7789S(0x0c);
+	LCD_DataWrite_ST7789S(0x00);
+	LCD_DataWrite_ST7789S(0x33);
+	LCD_DataWrite_ST7789S(0x33);
+	LCD_CtrlWrite_ST7789S (0xb7);
+	LCD_DataWrite_ST7789S(0x35);
+	//---------------------------------ST7789V Power setting--------------------------------------//
+	LCD_CtrlWrite_ST7789S (0xbb);
+	LCD_DataWrite_ST7789S(0x1f);
+	LCD_CtrlWrite_ST7789S (0xc0);
+	LCD_DataWrite_ST7789S(0x2c);
+	LCD_CtrlWrite_ST7789S (0xc2);
+	LCD_DataWrite_ST7789S(0x01);
+	LCD_CtrlWrite_ST7789S (0xc3);
+	LCD_DataWrite_ST7789S(0x12);
+	LCD_CtrlWrite_ST7789S (0xc4);
+	LCD_DataWrite_ST7789S(0x20);
+	LCD_CtrlWrite_ST7789S (0xc6);
+	LCD_DataWrite_ST7789S(0x0f);
+	LCD_CtrlWrite_ST7789S (0xd0);
+	LCD_DataWrite_ST7789S(0xa4);
+	LCD_DataWrite_ST7789S(0xa1);
+	//--------------------------------ST7789V gamma setting--------------------------------------//
+	LCD_CtrlWrite_ST7789S (0xe0);
+	LCD_DataWrite_ST7789S(0xd0);
+	LCD_DataWrite_ST7789S(0x08);
+	LCD_DataWrite_ST7789S(0x11);
+	LCD_DataWrite_ST7789S(0x08);
+	LCD_DataWrite_ST7789S(0x0c);
+	LCD_DataWrite_ST7789S(0x15);
+	LCD_DataWrite_ST7789S(0x39);
+	LCD_DataWrite_ST7789S(0x33);
+	LCD_DataWrite_ST7789S(0x50);
+	LCD_DataWrite_ST7789S(0x36);
+	LCD_DataWrite_ST7789S(0x13);
+	LCD_DataWrite_ST7789S(0x14);
+	LCD_DataWrite_ST7789S(0x29);
+	LCD_DataWrite_ST7789S(0x2d);
+	LCD_CtrlWrite_ST7789S (0xe1);
+	LCD_DataWrite_ST7789S(0xd0);
+	LCD_DataWrite_ST7789S(0x08);
+	LCD_DataWrite_ST7789S(0x10);
+	LCD_DataWrite_ST7789S(0x08);
+	LCD_DataWrite_ST7789S(0x06);
+	LCD_DataWrite_ST7789S(0x06);
+	LCD_DataWrite_ST7789S(0x39);
+	LCD_DataWrite_ST7789S(0x44);
+	LCD_DataWrite_ST7789S(0x51);
+	LCD_DataWrite_ST7789S(0x0b);
+	LCD_DataWrite_ST7789S(0x16);
+	LCD_DataWrite_ST7789S(0x14);
+	LCD_DataWrite_ST7789S(0x2f);
+	LCD_DataWrite_ST7789S(0x31);
+	LCD_CtrlWrite_ST7789S (0x29);
+#endif			
 	// clear the screen with black color
 	LCD_CtrlWrite_ST7789S(0x2C);
 	LCD_ClearAll_ST7789S(0x00);
-  
+
 	vm_drv_lcd_operation(VM_DRV_LCD_ENABLE_SERIAL0_2PIN);
 	vm_drv_lcd_operation2(VM_DRV_LCD_SET_SERIAL0_IF_2PIN_SIZE, LCD_SCNF_IF_2PIN_WIDTH_16);
 	
