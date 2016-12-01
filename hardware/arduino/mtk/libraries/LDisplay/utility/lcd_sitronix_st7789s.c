@@ -70,28 +70,26 @@ void lcd_st7789s_init(void)
   //vm_drv_lcd_operation(VM_DRV_LCD_DISABLE_SERIAL0_SINGLE_A0);
   vm_drv_lcd_operation(VM_DRV_LCD_ENABLE_HW_CS);
   
-	vm_drv_lcd_operation2(VM_DRV_LCD_SET_SERIAL0_IF_SIZE,LCD_SCNF_IF_WIDTH_8);
+  vm_drv_lcd_operation2(VM_DRV_LCD_SET_SERIAL0_IF_SIZE,LCD_SCNF_IF_WIDTH_8);
 	//Timing need tuning
-	vm_drv_lcd_init_timing(0, 0, 0, 0, 0, 7, 7);
+  vm_drv_lcd_init_timing(0, 0, 0, 0, 0, 7, 7);
 
-	//Set Driving current
-	//set_lcd_driving_current_centralize(LCD_DRIVING_12MA);
+  //Set Driving current
+  //set_lcd_driving_current_centralize(LCD_DRIVING_12MA);
   
-	vm_drv_lcd_set_serial0_1v8_driving(LCD_DRIVING_12MA);
+  vm_drv_lcd_set_serial0_1v8_driving(LCD_DRIVING_12MA);
   vm_drv_lcd_setup_driver(&lcd_func_ST7789S);
 
 }
 
 void lcd_enter_sleep_st7789s(void)
-{
-
+{      
     LCD_CtrlWrite_ST7789S(0x10);
     vm_drv_lcd_delay_ms(120); 
 }
 
 void lcd_exit_sleep_st7789s(void)
 {
-
     LCD_CtrlWrite_ST7789S(0x11);
     vm_drv_lcd_delay_ms(10);
     LCD_CtrlWrite_ST7789S(0x29);
@@ -163,30 +161,30 @@ void lcd_init_st7789s(VMUINT32 bkground, void **buf_addr)
 	LCD_DataWrite_ST7789S(0x00);// C0 40 60
 		
 	LCD_CtrlWrite_ST7789S(0x35);
-	LCD_DataWrite_ST7789S(0x00); //te on
+	LCD_DataWrite_ST7789S(0x00); //te on	
+    
+    LCD_CtrlWrite_ST7789S(0x3A);
+	LCD_DataWrite_ST7789S(0x55);
 	
 	LCD_CtrlWrite_ST7789S(0x2a);
 	LCD_DataWrite_ST7789S(0x00);
 	LCD_DataWrite_ST7789S(0x00);
 	LCD_DataWrite_ST7789S(0x00);
 	LCD_DataWrite_ST7789S(0xef);
-	
+
 	LCD_CtrlWrite_ST7789S(0x2b);
 	LCD_DataWrite_ST7789S(0x00);
 	LCD_DataWrite_ST7789S(0x00);
 	LCD_DataWrite_ST7789S(0x00);
 	LCD_DataWrite_ST7789S(0xef);
-		
-	LCD_CtrlWrite_ST7789S(0x3A);
-	LCD_DataWrite_ST7789S(0x55);
-	
-	LCD_CtrlWrite_ST7789S(0xB2);
-	LCD_DataWrite_ST7789S(0x1C);
-    LCD_DataWrite_ST7789S(0x1C);
-    LCD_DataWrite_ST7789S(0x01);
-    LCD_DataWrite_ST7789S(0xFF);
-    LCD_DataWrite_ST7789S(0x33);
 
+    LCD_CtrlWrite_ST7789S(0xb2);
+	LCD_DataWrite_ST7789S(0x0c);
+	LCD_DataWrite_ST7789S(0x0c);
+	LCD_DataWrite_ST7789S(0x00);
+	LCD_DataWrite_ST7789S(0x33);
+	LCD_DataWrite_ST7789S(0x33);
+    
     LCD_CtrlWrite_ST7789S(0xB3);
     LCD_DataWrite_ST7789S(0x10);
     LCD_DataWrite_ST7789S(0xFF);	  // 0x05
@@ -222,13 +220,13 @@ void lcd_init_st7789s(VMUINT32 bkground, void **buf_addr)
     LCD_CtrlWrite_ST7789S(0xC4);
     LCD_DataWrite_ST7789S(0x20);
 
-    LCD_CtrlWrite_ST7789S(0xC6);		  // Normal mode frame rate
+    LCD_CtrlWrite_ST7789S(0xC6);    // Normal mode frame rate
     LCD_DataWrite_ST7789S(0x1E);	// 0x0f 60Hz while FPA and BPA = 0x0C
 
     LCD_CtrlWrite_ST7789S(0xD0);
     LCD_DataWrite_ST7789S(0xA4);
     LCD_DataWrite_ST7789S(0xA1);
-
+    
     LCD_CtrlWrite_ST7789S(0xE0);
     LCD_DataWrite_ST7789S(0xD0);
     LCD_DataWrite_ST7789S(0x00);
@@ -319,6 +317,7 @@ void lcd_init_st7789s(VMUINT32 bkground, void **buf_addr)
 	LCD_DataWrite_ST7789S(0x14);
 	LCD_DataWrite_ST7789S(0x29);
 	LCD_DataWrite_ST7789S(0x2d);
+    
 	LCD_CtrlWrite_ST7789S (0xe1);
 	LCD_DataWrite_ST7789S(0xd0);
 	LCD_DataWrite_ST7789S(0x08);
@@ -334,6 +333,7 @@ void lcd_init_st7789s(VMUINT32 bkground, void **buf_addr)
 	LCD_DataWrite_ST7789S(0x14);
 	LCD_DataWrite_ST7789S(0x2f);
 	LCD_DataWrite_ST7789S(0x31);
+    
 	LCD_CtrlWrite_ST7789S (0x29);
 #endif			
 	// clear the screen with black color

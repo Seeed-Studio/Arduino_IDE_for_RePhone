@@ -44,12 +44,14 @@ boolean lcd_back_light_level(void* user_data)
     vm_dcl_control(pwm_handle, VM_PWM_CMD_SET_CLOCK, (void *) (&pwm_clock));
     vm_dcl_control(pwm_handle, VM_PWM_CMD_SET_COUNTER_AND_THRESHOLD, (void *) (&pwm_config_adv));
     vm_dcl_close(pwm_handle);
+    
 	return true;
 }
 
 boolean lcd_init(void* user_data)
 {
 	lcd_st7789s_init();
+    
 	return true;
 }
 
@@ -93,7 +95,7 @@ boolean lcd_screen_set(void* user_data)
 {
 	VMUINT32* ulValue = (VMUINT32*)user_data;
     vm_graphic_color_argb_t color;		// use to set screen and text color
-    vm_graphic_point_t frame_position[1] = {0, 0};
+    //vm_graphic_point_t frame_position[1] = {0, 0};
 
     // set color and draw back ground
     color.a = 255;
@@ -103,8 +105,8 @@ boolean lcd_screen_set(void* user_data)
     vm_graphic_set_color(color);
     vm_graphic_draw_solid_rectangle(&g_frame, 0,0, 240,240);
 	
-	vm_graphic_rotate_frame(&g_rotated_frame, &g_frame, VM_GRAPHIC_ROTATE_180);
-    vm_graphic_blt_frame(g_frame_blt_group, frame_position, (VMINT)1);
+	//vm_graphic_rotate_frame(&g_rotated_frame, &g_frame, VM_GRAPHIC_ROTATE_180);
+    //vm_graphic_blt_frame(g_frame_blt_group, frame_position, (VMINT)1);
 
 	return true;
 }
@@ -115,22 +117,18 @@ boolean lcd_draw_font(void* user_data)
 	
 	VMCHAR s[52];					    // string's buffer
     vm_graphic_color_argb_t color;		// use to set screen and text color
-    vm_graphic_point_t frame_position[1] = {0, 0};
-	
-	VMUINT8 strNum = 0;
-	while(*(data->str + strNum) != '\0')
-	{
-		strNum ++;
-	}
-	
+    //vm_graphic_point_t frame_position[1] = {0, 0};
+
     vm_chset_ascii_to_ucs2((VMWSTR)s,52, data->str);
+    
 	// set color and draw back ground
     color.a = 0;
     color.r = ((data->BCulValue >> 16) & 0xff);
 	color.g = ((data->BCulValue >> 8) & 0xff);
 	color.b = (data->BCulValue & 0xff);
     vm_graphic_set_color(color);
-    vm_graphic_draw_solid_rectangle(&g_frame, data->ulX, data->ulY, strNum * 10, 20);
+    vm_graphic_set_font_size(data->ulSize);
+    vm_graphic_draw_solid_rectangle(&g_frame, data->ulX, data->ulY, vm_graphic_get_text_width((VMWSTR)s), vm_graphic_get_text_height((VMWSTR)s));
 
 	// set color and draw text
     color.a = 0;
@@ -138,11 +136,10 @@ boolean lcd_draw_font(void* user_data)
 	color.g = ((data->FCulValue >> 8) & 0xff);
 	color.b = (data->FCulValue & 0xff);
     vm_graphic_set_color(color);
-	vm_graphic_set_font_size(20);
     vm_graphic_draw_text(&g_frame,data->ulX, data->ulY, (VMWSTR)s);
 	
-	vm_graphic_rotate_frame(&g_rotated_frame, &g_frame, VM_GRAPHIC_ROTATE_180);
-    vm_graphic_blt_frame(g_frame_blt_group, frame_position, (VMINT)1);
+	//vm_graphic_rotate_frame(&g_rotated_frame, &g_frame, VM_GRAPHIC_ROTATE_180);
+    //vm_graphic_blt_frame(g_frame_blt_group, frame_position, (VMINT)1);
 	
 	return true;
 }
@@ -152,50 +149,32 @@ boolean lcd_draw_number(void* user_data)
 	number_info_struct* data = (number_info_struct*) user_data;
 	VMCHAR s[26];					    // string's buffer
     vm_graphic_color_argb_t color;		// use to set screen and text color
-    vm_graphic_point_t frame_position[1] = {0, 0};
-	
-	VMCHAR str[11]={0};
-	VMUINT8 bitNum;
-	VMUINT32 dataTemp;
-	VMUINT32 dataTen;
-	VMUINT8 i,j=0;
-	
-	dataTemp = data->ulData;
+    //vm_graphic_point_t frame_position[1] = {0, 0};
 
-	while(dataTemp)
-	{
-		dataTemp /= 10;
-		bitNum ++;
-	}
-	str[0] = '0';
-	dataTemp = data->ulData;
-	while(bitNum--)
-	{
-		for(i=0,dataTen=1;i<bitNum;i++)dataTen *= 10;
-		str[j++] = (dataTemp / dataTen) + '0';
-		dataTemp %= dataTen;
-	}
-
+    VMCHAR str[13]={0};
+    sprintf((char *)str, "%d", data->ulData);
+    
     vm_chset_ascii_to_ucs2((VMWSTR)s,26, str);
+   
 	// set color and draw back ground
     color.a = 0;
     color.r = ((data->BCulValue >> 16) & 0xff);
 	color.g = ((data->BCulValue >> 8) & 0xff);
 	color.b = (data->BCulValue & 0xff);
     vm_graphic_set_color(color);
-    vm_graphic_draw_solid_rectangle(&g_frame, data->ulX, data->ulY, j * 10, 20);
-
+    vm_graphic_set_font_size(data->ulSize); 
+    vm_graphic_draw_solid_rectangle(&g_frame, data->ulX, data->ulY, vm_graphic_get_text_width((VMWSTR)s), vm_graphic_get_text_height((VMWSTR)s));
+    
 	// set color and draw text
     color.a = 0;
     color.r = ((data->FCulValue >> 16) & 0xff);
 	color.g = ((data->FCulValue >> 8) & 0xff);
 	color.b = (data->FCulValue & 0xff);
     vm_graphic_set_color(color);
-	vm_graphic_set_font_size(18);
     vm_graphic_draw_text(&g_frame,data->ulX, data->ulY, (VMWSTR)s);
 	
-	vm_graphic_rotate_frame(&g_rotated_frame, &g_frame, VM_GRAPHIC_ROTATE_180);
-    vm_graphic_blt_frame(g_frame_blt_group, frame_position, (VMINT)1);
+	//vm_graphic_rotate_frame(&g_rotated_frame, &g_frame, VM_GRAPHIC_ROTATE_180);
+    //vm_graphic_blt_frame(g_frame_blt_group, frame_position, (VMINT)1);
 	
 	return true;
 }
@@ -217,7 +196,7 @@ boolean lcd_draw_point(void* user_data)
     pbuf += data->ulY * 240 + data->ulX;
     *pbuf = ((data->PCulValue >> 8) & (0x1F << 11)) | ((data->PCulValue >> 5) & (0x3F << 5)) | ((data->PCulValue >> 3) & 0x1F);
 	
-	vm_graphic_rotate_frame(&g_rotated_frame, &g_frame, VM_GRAPHIC_ROTATE_180);
+	//vm_graphic_rotate_frame(&g_rotated_frame, &g_frame, VM_GRAPHIC_ROTATE_180);
 	//vm_graphic_blt_frame(g_frame_blt_group, frame_position, (VMINT)1);
 	
 	return true;
@@ -237,7 +216,7 @@ boolean lcd_draw_line(void* user_data)
     vm_graphic_set_color(color);
     vm_graphic_draw_line(&g_frame, data->ulX1, data->ulY1, data->ulX2, data->ulY2);
 	
-	vm_graphic_rotate_frame(&g_rotated_frame, &g_frame, VM_GRAPHIC_ROTATE_180);
+	//vm_graphic_rotate_frame(&g_rotated_frame, &g_frame, VM_GRAPHIC_ROTATE_180);
 	//vm_graphic_blt_frame(g_frame_blt_group, frame_position, (VMINT)1);
 	
 	return true;
@@ -257,7 +236,7 @@ boolean lcd_draw_fill_rectangle(void* user_data)
     vm_graphic_set_color(color);
     vm_graphic_draw_solid_rectangle(&g_frame, data->ulX1, data->ulY1, data->ulX2 - data->ulX1, data->ulY2 - data->ulY1);
 	
-	vm_graphic_rotate_frame(&g_rotated_frame, &g_frame, VM_GRAPHIC_ROTATE_180);
+	//vm_graphic_rotate_frame(&g_rotated_frame, &g_frame, VM_GRAPHIC_ROTATE_180);
 	//vm_graphic_blt_frame(g_frame_blt_group, frame_position, (VMINT)1);
 	
 	return true;
@@ -268,5 +247,6 @@ boolean lcd_draw_updata(void* user_data)
 	vm_graphic_point_t frame_position[1] = {0, 0};
 	vm_graphic_rotate_frame(&g_rotated_frame, &g_frame, VM_GRAPHIC_ROTATE_180);
 	vm_graphic_blt_frame(g_frame_blt_group, frame_position, (VMINT)1);
+    
 	return true;
 }

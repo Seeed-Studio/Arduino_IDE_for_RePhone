@@ -26,6 +26,7 @@ typedef struct
     VMCHAR *str;
 	VMUINT32 BCulValue;
 	VMUINT32 FCulValue;
+	VMUINT8 ulSize;
 }string_info_struct;
 
 typedef struct
@@ -35,6 +36,7 @@ typedef struct
     VMUINT32 ulData;
 	VMUINT32 BCulValue;
 	VMUINT32 FCulValue;
+	VMUINT8 ulSize;
 }number_info_struct;
 
 typedef struct

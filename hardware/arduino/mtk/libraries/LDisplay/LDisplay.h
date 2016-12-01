@@ -39,11 +39,7 @@ public:
 	/**
 	 *  \brief Draw the colour of display.  
 	 *  
-	 *  \param [in] ulX the x coordinate of font, from 0 to 239
-	 *  \param [in] ulY the y coordinate of font, from 0 to 239
-	 *  \param [in] str the pointer of font
-	 *  \param [in] BGulValue the colour of back light, format is R:G:B -> 255:255:255
-	 *  \param [in] DTulValue the colour of font, format is R:G:B -> 255:255:255
+	 *  \param [in] ulValue the colour of back light, format is R:G:B -> 255:255:255
 	 *  
 	 *  \return Return Null.
 	 */
@@ -57,10 +53,11 @@ public:
 	 *  \param [in] str the pointer of font
 	 *  \param [in] BGulValue the colour of back light, format is R:G:B -> 255:255:255
 	 *  \param [in] DTulValue the colour of font, format is R:G:B -> 255:255:255
+	 *	\param [in] ulSize the size of font
 	 *  
 	 *  \return Return Null.
 	 */
-	void draw_font(uint8_t ulX, uint8_t ulY, const char* str, uint32_t BGulValue, uint32_t DTulValue);
+	void draw_font(uint8_t ulX, uint8_t ulY, const char* str, uint32_t BGulValue, uint32_t DTulValue, uint8_t ulSize);
 	
 	/**
 	 *  \brief Display number.  
@@ -70,10 +67,11 @@ public:
 	 *  \param [in] ulData the number that want to display
 	 *  \param [in] BCulValue the colour of back light, format is R:G:B -> 255:255:255
 	 *  \param [in] FCulValue the colour of font, format is R:G:B -> 255:255:255
+	 *	\param [in] ulSize the size of font
 	 *  
 	 *  \return Return Null.
 	 */	
-	void draw_number(uint8_t ulX, uint8_t ulY, uint32_t ulData, uint32_t BCulValue, uint32_t FCulValue);
+	void draw_number(uint8_t ulX, uint8_t ulY, uint32_t ulData, uint32_t BCulValue, uint32_t FCulValue, uint8_t ulSize);
 	
 	/**
 	 *  \brief Draw point, need function draw_point to update display.

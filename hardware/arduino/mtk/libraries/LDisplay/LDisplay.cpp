@@ -24,7 +24,7 @@ void LDisplayClass::screen_set(uint32_t ulValue)
 	remoteCall(lcd_screen_set, &ulValue);
 }
 
-void LDisplayClass::draw_font(uint8_t ulX, uint8_t ulY, const char* str, uint32_t BCulValue, uint32_t FCulValue)
+void LDisplayClass::draw_font(uint8_t ulX, uint8_t ulY, const char* str, uint32_t BCulValue, uint32_t FCulValue, uint8_t ulSize)
 {
 	string_info_struct data;
 	data.ulX = ulX;
@@ -32,10 +32,11 @@ void LDisplayClass::draw_font(uint8_t ulX, uint8_t ulY, const char* str, uint32_
 	data.str = (VMCHAR*)str;
 	data.BCulValue = BCulValue;
 	data.FCulValue = FCulValue;
+	data.ulSize = ulSize;
 	remoteCall(lcd_draw_font, &data);
 }
 
-void LDisplayClass::draw_number(uint8_t ulX, uint8_t ulY, uint32_t ulData, uint32_t BCulValue, uint32_t FCulValue)
+void LDisplayClass::draw_number(uint8_t ulX, uint8_t ulY, uint32_t ulData, uint32_t BCulValue, uint32_t FCulValue, uint8_t ulSize)
 {
 	number_info_struct data;	
 	data.ulX = ulX;
@@ -43,6 +44,7 @@ void LDisplayClass::draw_number(uint8_t ulX, uint8_t ulY, uint32_t ulData, uint3
 	data.ulData = ulData;
 	data.BCulValue = BCulValue;
 	data.FCulValue = FCulValue;
+	data.ulSize = ulSize;
 	remoteCall(lcd_draw_number, &data);
 }
 
