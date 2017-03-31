@@ -1,3 +1,5 @@
+**Note:** This repository had been abandoned, put hand on [Seeed Platform](https://github.com/Seeed-Studio/Seeed_Platform) for the latest version.
+
 # Arduino IDE for RePhone
 
 ![](https://ksr-ugc.imgix.net/projects/1975885/photo-original.jpg?v=1444251465&w=1536&h=1152&fit=crop&auto=format&q=92&s=d301d98b1595a481fb18a5e312948ed6)
