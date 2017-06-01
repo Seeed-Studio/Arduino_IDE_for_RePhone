@@ -61,7 +61,7 @@ public:
 	//  The last step of sending an SMS: Confirm and send out the SMS.
 	// RETURNS
 	//  1: Sending succeeds. 0: Send fails.
-    int endSMS();
+    int sendSMS();
 
 	// DESCRIPTION
 	//  Checks if there is any unread SMS.

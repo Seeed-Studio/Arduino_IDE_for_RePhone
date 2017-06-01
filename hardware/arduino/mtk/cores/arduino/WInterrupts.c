@@ -78,7 +78,7 @@ void attachInterrupt(uint32_t pin, void (*callback)(void), uint32_t mode)
     if(pin > EXTERNAL_NUM_INTERRUPTS)
 		return ;
 
-	detachInterrupt(pin);
+	detachInterrupt(pin + A1);
 
 	if(!changePinType(gExinterruptsPio[pin].pin, PIO_EINT, &eint_handle))
 		return;
@@ -193,6 +193,9 @@ void attachInterrupt(uint32_t pin, void (*callback)(void), uint32_t mode)
 void detachInterrupt(uint32_t pin)
 {
 	pin = pin - A1;
+    
+    if(pin > EXTERNAL_NUM_INTERRUPTS)
+		return ;
 	
     if(VM_DCL_HANDLE_INVALID != gExinterruptsPio[pin].handle)
     {
